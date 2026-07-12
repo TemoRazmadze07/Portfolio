@@ -310,6 +310,80 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
   padding: 3px 9px; border-radius: 7px;
 }
 
+/* ---------- work marquee: auto-scrolling project posters ---------- */
+/* Same seamless-loop mechanism as the recommendations marquee: the track holds
+   two identical sets of cards and translates by -50%, so the second set lands
+   exactly where the first began. Each card owns its trailing gap via margin-right
+   (not `gap`) so -50% is a pixel-perfect loop point regardless of card count. */
+.work-marquee {
+  overflow: hidden; padding: 18px 0 32px;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+}
+.work-track { display: flex; width: max-content; animation: work-scroll 48s linear infinite; }
+.work-marquee:hover .work-track { animation-play-state: paused; }
+@keyframes work-scroll { to { transform: translateX(-50%); } }
+
+.pcard {
+  width: 340px; height: 466px; flex: none; margin-right: 24px;
+  position: relative; display: flex; flex-direction: column; overflow: hidden;
+  border-radius: var(--r-lg); text-decoration: none; color: var(--body);
+  border: 1px solid color-mix(in srgb, var(--ink) 7%, transparent);
+  transition: transform .5s cubic-bezier(.2,.65,.25,1), box-shadow .5s cubic-bezier(.2,.65,.25,1);
+}
+.pcard:hover { transform: translateY(-8px); box-shadow: 0 34px 60px -26px rgba(14,27,44,.32); }
+
+.pcard-top { padding: 28px 28px 0; }
+.pcard-cat { font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--mute); margin-bottom: 10px; }
+.pcard-brand { font-size: 25px; font-weight: 800; color: var(--ink); letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 10px; }
+.pcard-desc { font-size: 14.5px; line-height: 1.5; color: var(--body); }
+.pcard-chips { list-style: none; display: flex; flex-wrap: wrap; gap: 7px; margin-top: 14px; }
+.pcard-chips li {
+  font-size: 11.5px; font-weight: 700; color: var(--ink);
+  background: color-mix(in srgb, #fff 68%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
+  padding: 5px 10px; border-radius: var(--r-pill);
+}
+
+/* device visual bleeds to the bottom edge of the poster */
+.pcard-figure { margin-top: 20px; flex: 1 1 auto; min-height: 150px; position: relative; overflow: hidden; }
+.pcard-figure img {
+  display: block; width: 100%; height: 100%; object-fit: cover; object-position: top center;
+  transition: transform .6s cubic-bezier(.2,.65,.25,1);
+}
+.pcard:hover .pcard-figure img { transform: scale(1.04); }
+/* soft blend where the image meets the tinted text area */
+.pcard-figure::before {
+  content: ""; position: absolute; inset: 0 0 auto 0; height: 40px; z-index: 1;
+  background: linear-gradient(180deg, rgba(255,255,255,.55), transparent);
+}
+
+/* corner affordance — always visible, nudges + turns accent on hover */
+.pcard-go {
+  position: absolute; top: 20px; right: 20px; z-index: 2;
+  width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center;
+  background: color-mix(in srgb, var(--ink) 90%, transparent); color: #fff;
+  transition: transform .35s ease, background .35s ease;
+}
+.pcard:hover .pcard-go { transform: translate(2px, -2px) scale(1.08); background: var(--accent); }
+.pcard-go svg { width: 15px; height: 15px; }
+
+@media (max-width: 880px) {
+  .pcard { width: 268px; height: 418px; margin-right: 16px; }
+  .pcard-brand { font-size: 22px; }
+  .pcard-desc { font-size: 14px; }
+  .work-track { animation-duration: 38s; }
+}
+
+/* accessible fallback: no motion → a clean centered grid of the real cards */
+@media (prefers-reduced-motion: reduce) {
+  .work-marquee { overflow: visible; -webkit-mask-image: none; mask-image: none; }
+  .work-track { animation: none; flex-wrap: wrap; justify-content: center; width: auto; gap: 24px; }
+  .pcard { margin-right: 0; }
+  .pcard.is-clone { display: none; }
+  .pcard-figure img { transition: none; }
+}
+
 /* ---------- recommendations marquee ---------- */
 .words { padding: 88px 0 56px; }
 .sample-note { font-style: italic; }
@@ -318,24 +392,33 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
   mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
 }
-.t-row { display: flex; gap: 20px; width: max-content; animation: t-scroll 60s linear infinite; }
+.t-row { display: flex; gap: 22px; width: max-content; align-items: stretch; animation: t-scroll 60s linear infinite; }
 .t-row-b { animation-duration: 75s; animation-direction: reverse; }
-.t-marquee:hover .t-row { animation-play-state: paused; }
+.t-marquee:hover .t-row, .t-marquee:focus-within .t-row { animation-play-state: paused; }
 @keyframes t-scroll { to { transform: translateX(-50%); } }
 
 .t-card {
-  width: 400px; flex: none; display: flex; flex-direction: column; gap: 14px;
-  background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 26px 26px 22px;
+  width: 384px; flex: none; display: flex; flex-direction: column; gap: 14px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 24px 26px 22px;
   box-shadow: 0 10px 30px -18px rgba(14,27,44,.16);
   transition: transform .45s cubic-bezier(.2,.65,.25,1), box-shadow .45s cubic-bezier(.2,.65,.25,1);
 }
 .t-card:hover { transform: translateY(-5px); box-shadow: 0 22px 44px -20px rgba(14,27,44,.24); }
-.t-logo {
-  align-self: flex-start; font-size: 12px; font-weight: 800; letter-spacing: .04em;
-  color: var(--ink); background: #f1f3f7; border: 1px solid var(--line);
-  padding: 6px 12px; border-radius: var(--r-pill);
-}
+
+/* brand logo slot — one aligned top-left baseline on every card (replaces the old grey text chip) */
+.t-brand { display: flex; align-items: center; height: 24px; }
+.t-brand img { display: block; width: auto; }
+.t-blogo-novocure { height: 14px; }
+.t-blogo-rogers   { height: 16px; }
+.t-blogo-golance  { height: 19px; }
+.t-blogo-epam     { height: 22px; }
+/* Google as its 4-colour wordmark, set in the site font (nominative attribution use) */
+.t-blogo-google { font-weight: 800; font-size: 19px; letter-spacing: -.02em; line-height: 1; white-space: nowrap; }
+/* recommenders with no named employer carry a small category label instead of a logo */
+.t-brand--label { font-size: 11px; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; color: var(--mute); }
+
 .t-quote { font-size: 15.5px; line-height: 1.55; color: var(--ink); font-weight: 500; }
+.t-quote--clamp { display: -webkit-box; -webkit-line-clamp: 7; -webkit-box-orient: vertical; overflow: hidden; }
 .t-person { display: flex; align-items: center; gap: 12px; margin-top: auto; }
 .t-person b { display: block; font-size: 14px; color: var(--ink); }
 .t-person i { display: block; font-size: 12.5px; color: var(--mute); font-style: normal; }
@@ -353,17 +436,34 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
 .t-avatar.t-pic { position: relative; overflow: hidden; }
 .t-avatar.t-pic::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: var(--pic) center/cover no-repeat; }
 
-.t-photo {
-  justify-content: flex-end; min-height: 300px; position: relative; overflow: hidden;
-  background-image: var(--photo); background-size: cover; background-position: center;
-  border: none;
+/* ---------- full-bleed photo testimonial cards (Andrés, Rebecca) ---------- */
+/* photo cards run wider (landscape) so the quote fits in ~2 lines below the face */
+.t-photo { width: 600px; position: relative; overflow: hidden; border: none; min-height: 320px; padding: 22px 26px; }
+.t-photo-img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 40%; z-index: 0;
+  transition: transform .6s cubic-bezier(.2,.65,.25,1);
 }
+@media (max-width: 640px) {
+  .t-photo { width: 86vw; max-width: 360px; min-height: 400px; }
+  .t-photo-img { object-position: center 28%; }
+}
+.t-photo:hover .t-photo-img { transform: scale(1.05); }
+/* two-sided scrim: darken the top for the logo and the bottom for the quote, keep the face clear */
 .t-photo::before {
-  content: ""; position: absolute; inset: 0;
-  background: linear-gradient(180deg, rgba(10,16,28,0) 30%, rgba(10,16,28,.72));
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(to bottom, rgba(11,16,38,.52) 0%, rgba(11,16,38,0) 24%, rgba(11,16,38,0) 40%, rgba(11,16,38,.9) 100%);
 }
-.t-photo .t-logo { position: relative; z-index: 1; background: color-mix(in srgb, #fff 88%, transparent); }
-.t-photo .t-quote { position: relative; z-index: 1; color: #fff; font-weight: 600; text-shadow: 0 1px 8px rgba(0,0,0,.25); }
+.t-photo--bright::before {
+  background: linear-gradient(to bottom, rgba(11,16,38,.5) 0%, rgba(11,16,38,0) 22%, rgba(11,16,38,.18) 46%, rgba(11,16,38,.94) 100%);
+}
+.t-photo > .t-brand { position: relative; z-index: 2; margin-bottom: auto; }
+.t-photo-body { position: relative; z-index: 2; display: flex; flex-direction: column; gap: 12px; }
+.t-photo .t-quote { color: #fff; font-weight: 600; text-shadow: 0 1px 10px rgba(0,0,0,.35); }
+.t-photo-attr b { display: block; font-size: 14px; color: #fff; }
+.t-photo-attr i { display: block; font-size: 12.5px; color: rgba(255,255,255,.85); font-style: normal; }
+/* white knockout logos over the photo */
+.t-brand--knockout img { filter: brightness(0) invert(1); }
+.t-brand--knockout .t-blogo-google b { color: #fff !important; }
 
 /* ---------- reveal animations ---------- */
 .reveal { opacity: 0; transform: translateY(26px); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.65,.3,1); }
@@ -376,6 +476,7 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
   .reveal { opacity: 1; transform: none; transition: none; }
   .marquee-track { animation: none; flex-wrap: wrap; white-space: normal; }
   .t-row { animation: none; flex-wrap: wrap; width: auto; }
+  .t-photo-img, .t-photo:hover .t-photo-img { transform: none; transition: none; }
   .card-img img, .card.in .card-img img { transform: none; transition: none; }
   .btn, .card, .t-card, .mock-window { transition: none; }
 }
@@ -399,7 +500,6 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
 
 /* ---------- testimonial extras (real recs) ---------- */
 .t-avatar { display: inline-flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 13.5px; letter-spacing: .02em; }
-.t-photo .t-attr { position: relative; z-index: 1; color: #fff; opacity: .85; font-size: 12.5px; font-weight: 600; }
 .t-more { justify-content: center; gap: 12px; background: var(--tint-blue); border: none; text-decoration: none; }
 .t-more .card-cta { color: var(--accent-ink); }
 

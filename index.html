@@ -26,7 +26,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=34">
+<link rel="stylesheet" href="styles.css?v=35">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="assets/favicon-16.png" sizes="16x16" type="image/png">
@@ -458,78 +458,106 @@ if ("scrollRestoration" in history) history.scrollRestoration = "manual";
       <p class="kicker reveal"><span class="kbar"></span>Selected work</p>
       <h2 class="section-title reveal">Four projects, four kinds of <span class="accent">proof</span></h2>
       <p class="section-sub reveal">An award, an AI product, an accessibility rebuild, and deep systems craft.</p>
+    </div>
 
-      <div class="cards">
+    <!-- Auto-scrolling project marquee — full-bleed (outside .wrap), matching the
+         recommendations marquee below. Never-ending loop; pauses on hover. The track
+         holds the four cards twice — the second set is aria-hidden and non-focusable
+         so assistive tech and keyboard users see each project once. -->
+    <div class="work-marquee reveal" aria-label="Selected projects">
+        <div class="work-track">
 
-        <!-- TBC -->
-        <a class="card tint-blue reveal" href="tbc.html">
-          <div class="card-top">
-            <p class="card-kicker">TBC Bank · Banking</p>
-            <h3>Business Internet Bank redesign — winner of Global Finance's “Best Online Portal” 2021</h3>
-            <p class="card-blurb">Rearchitecting Georgia's leading business-banking platform on evidence: tree testing, IA rebuild, and a research-based process.</p>
-            <ul class="chips">
-              <li>Global Finance 2021</li><li>NPS 55→64</li><li>Information architecture</li>
-            </ul>
-          </div>
-          <figure class="card-img">
-            <img src="assets/ph-tbc.svg" alt="TBC Business Internet Bank — placeholder visual" loading="lazy">
-            <figcaption>placeholder — real screens coming</figcaption>
-          </figure>
-          <span class="card-cta">Read case study <span class="btn-arrow">→</span></span>
-        </a>
+          <!-- ===== set 1 (real) ===== -->
+          <a class="pcard tint-blue" href="tbc.html">
+            <span class="pcard-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></span>
+            <div class="pcard-top">
+              <p class="pcard-cat">Banking · Case study</p>
+              <p class="pcard-brand">TBC Bank</p>
+              <p class="pcard-desc">Business Internet Bank redesign — winner of Global Finance's “Best Online Portal” 2021.</p>
+              <ul class="pcard-chips"><li>NPS 55→64</li><li>IA rebuild</li></ul>
+            </div>
+            <figure class="pcard-figure"><img src="assets/ph-tbc.svg" alt="TBC Business Internet Bank — placeholder visual" loading="lazy"></figure>
+          </a>
 
-        <!-- goLance -->
-        <a class="card tint-green reveal" href="golance.html">
-          <div class="card-top">
-            <p class="card-kicker">goLance · AI marketplace</p>
-            <h3>Designing trust into AI matching — cultural-fit assessment lifting engagement +25%</h3>
-            <p class="card-blurb">An LLM-supported, scenario-based assessment and learning-model matching — designed so hiring users trust what the model surfaces.</p>
-            <ul class="chips">
-              <li>+25% engagement</li><li>−22% checkout drop-off</li><li>AI / LLM UX</li>
-            </ul>
-          </div>
-          <figure class="card-img">
-            <img src="assets/ph-golance.svg" alt="goLance cultural-fit assessment — illustrative mockup" loading="lazy">
-            <figcaption>dummy mockup — watch the live feature above</figcaption>
-          </figure>
-          <span class="card-cta">Read case study <span class="btn-arrow">→</span></span>
-        </a>
+          <a class="pcard tint-green" href="golance.html">
+            <span class="pcard-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></span>
+            <div class="pcard-top">
+              <p class="pcard-cat">AI marketplace</p>
+              <p class="pcard-brand">goLance</p>
+              <p class="pcard-desc">Designing trust into AI matching — a cultural-fit assessment lifting engagement +25%.</p>
+              <ul class="pcard-chips"><li>+25% engagement</li><li>AI / LLM UX</li></ul>
+            </div>
+            <figure class="pcard-figure"><img src="assets/ph-golance.svg" alt="goLance cultural-fit assessment — illustrative mockup" loading="lazy"></figure>
+          </a>
 
-        <!-- Novocure -->
-        <a class="card tint-sand reveal" href="novocure.html">
-          <div class="card-top">
-            <p class="card-kicker">Novocure · Healthcare, via EPAM</p>
-            <h3>Restarting an oncology HCP portal from zero — three markets, WCAG AA, +21% sales</h3>
-            <p class="card-blurb">A vendor-abandoned build restarted from scratch: 350+ requirements, 400+ screens, accessibility built in from the first component.</p>
-            <ul class="chips">
-              <li>+21% sales Q4 2024</li><li>SUS 87/100</li><li>WCAG AA</li>
-            </ul>
-          </div>
-          <figure class="card-img">
-            <img src="assets/ph-novocure.svg" alt="Novocure HCP portal — placeholder visual" loading="lazy">
-            <figcaption>placeholder — real screens coming</figcaption>
-          </figure>
-          <span class="card-cta">Read case study <span class="btn-arrow">→</span></span>
-        </a>
+          <a class="pcard tint-sand" href="novocure.html">
+            <span class="pcard-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></span>
+            <div class="pcard-top">
+              <p class="pcard-cat">Healthcare · via EPAM</p>
+              <p class="pcard-brand">Novocure</p>
+              <p class="pcard-desc">An oncology HCP portal restarted from zero — three markets, WCAG AA, +21% sales.</p>
+              <ul class="pcard-chips"><li>+21% sales</li><li>WCAG AA</li></ul>
+            </div>
+            <figure class="pcard-figure"><img src="assets/ph-novocure.svg" alt="Novocure HCP portal — placeholder visual" loading="lazy"></figure>
+          </a>
 
-        <!-- Rogers -->
-        <a class="card tint-rose reveal" href="rogers.html">
-          <div class="card-top">
-            <p class="card-kicker">Rogers Communications · Telecom, via EPAM</p>
-            <h3>OneView: cutting the sales rep's cognitive load — −25% time-on-task, −80% errors</h3>
-            <p class="card-blurb">A rep-facing buy flow rebuilt around how reps actually sell: fewer clicks, one legible payment decision, depth on demand.</p>
-            <ul class="chips">
-              <li>−25% time-on-task</li><li>−80% user errors</li><li>3wk→1wk onboarding</li>
-            </ul>
-          </div>
-          <figure class="card-img">
-            <img src="assets/ph-rogers.svg" alt="Rogers OneView buy flow — placeholder visual" loading="lazy">
-            <figcaption>placeholder — real screens coming</figcaption>
-          </figure>
-          <span class="card-cta">Read case study <span class="btn-arrow">→</span></span>
-        </a>
+          <a class="pcard tint-rose" href="rogers.html">
+            <span class="pcard-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></span>
+            <div class="pcard-top">
+              <p class="pcard-cat">Telecom · via EPAM</p>
+              <p class="pcard-brand">Rogers</p>
+              <p class="pcard-desc">OneView — cutting the sales rep's cognitive load: −25% time-on-task, −80% errors.</p>
+              <ul class="pcard-chips"><li>−25% time-on-task</li><li>−80% errors</li></ul>
+            </div>
+            <figure class="pcard-figure"><img src="assets/ph-rogers.svg" alt="Rogers OneView buy flow — placeholder visual" loading="lazy"></figure>
+          </a>
 
-      </div>
+          <!-- ===== set 2 (clones — hidden from assistive tech, not tabbable) ===== -->
+          <a class="pcard tint-blue is-clone" href="tbc.html" aria-hidden="true" tabindex="-1">
+            <span class="pcard-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></span>
+            <div class="pcard-top">
+              <p class="pcard-cat">Banking · Case study</p>
+              <p class="pcard-brand">TBC Bank</p>
+              <p class="pcard-desc">Business Internet Bank redesign — winner of Global Finance's “Best Online Portal” 2021.</p>
+              <ul class="pcard-chips"><li>NPS 55→64</li><li>IA rebuild</li></ul>
+            </div>
+            <figure class="pcard-figure"><img src="assets/ph-tbc.svg" alt="" loading="lazy"></figure>
+          </a>
+
+          <a class="pcard tint-green is-clone" href="golance.html" aria-hidden="true" tabindex="-1">
+            <span class="pcard-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></span>
+            <div class="pcard-top">
+              <p class="pcard-cat">AI marketplace</p>
+              <p class="pcard-brand">goLance</p>
+              <p class="pcard-desc">Designing trust into AI matching — a cultural-fit assessment lifting engagement +25%.</p>
+              <ul class="pcard-chips"><li>+25% engagement</li><li>AI / LLM UX</li></ul>
+            </div>
+            <figure class="pcard-figure"><img src="assets/ph-golance.svg" alt="" loading="lazy"></figure>
+          </a>
+
+          <a class="pcard tint-sand is-clone" href="novocure.html" aria-hidden="true" tabindex="-1">
+            <span class="pcard-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></span>
+            <div class="pcard-top">
+              <p class="pcard-cat">Healthcare · via EPAM</p>
+              <p class="pcard-brand">Novocure</p>
+              <p class="pcard-desc">An oncology HCP portal restarted from zero — three markets, WCAG AA, +21% sales.</p>
+              <ul class="pcard-chips"><li>+21% sales</li><li>WCAG AA</li></ul>
+            </div>
+            <figure class="pcard-figure"><img src="assets/ph-novocure.svg" alt="" loading="lazy"></figure>
+          </a>
+
+          <a class="pcard tint-rose is-clone" href="rogers.html" aria-hidden="true" tabindex="-1">
+            <span class="pcard-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></span>
+            <div class="pcard-top">
+              <p class="pcard-cat">Telecom · via EPAM</p>
+              <p class="pcard-brand">Rogers</p>
+              <p class="pcard-desc">OneView — cutting the sales rep's cognitive load: −25% time-on-task, −80% errors.</p>
+              <ul class="pcard-chips"><li>−25% time-on-task</li><li>−80% errors</li></ul>
+            </div>
+            <figure class="pcard-figure"><img src="assets/ph-rogers.svg" alt="" loading="lazy"></figure>
+          </a>
+
+        </div>
     </div>
   </section>
 
@@ -701,12 +729,8 @@ if ("scrollRestoration" in history) history.scrollRestoration = "manual";
       <p class="section-sub reveal">Real recommendations from LinkedIn — lightly trimmed for space; full versions on my profile.</p>
     </div>
     <div class="t-marquee reveal" aria-label="Recommendations">
-      <div class="t-row">
-        <article class="t-card"><span class="t-logo">EPAM · Novocure</span><p class="t-quote">“Since I first started onboarding to Novocure, Temuri's presence was felt. The previous lead had normally been hands-off with the day-to-day work because Temuri properly handled tasks — as well as the management of work throughout the team.”</p><div class="t-person"><span class="t-avatar av-1 t-pic" style="--pic:url('assets/person-jamell.jpg')">JE</span><span><b>Jamell Evans</b><i>Director, Experience Design · New York</i></span></div></article><article class="t-card"><span class="t-logo">Project delivery</span><p class="t-quote">“It is rare to find a designer who truly understands the technical side of development — Temo is exactly that person. Every handoff was seamless.”</p><div class="t-person"><span class="t-avatar av-7">VY</span><span><b>Viktor Yermolovich</b><i>Project Manager</i></span></div></article><article class="t-card"><span class="t-logo">EPAM · Rogers</span><p class="t-quote">“Temuri is a skilled designer who provides a lot of value to our client, Rogers. He designed an experience that is expected to be one of the big successes for 2023. Our EPAM team and our Rogers stakeholders very much value Temo's point of view.”</p><div class="t-person"><span class="t-avatar av-2 t-pic" style="--pic:url('assets/person-jane.jpg')">JT</span><span><b>Jayne Thomas</b><i>Associate Director, Experience Design</i></span></div></article><article class="t-card"><span class="t-logo">Google</span><p class="t-quote">“Temuri is an exceptional designer who consistently delivers outstanding results, exceeding expectations with attention to detail and an ability to design optimal experiences within given business and technical restrictions. His self-sufficient approach to work, talent for diving deep into problems, providing valuable feedback to colleagues, and contributing to the team’s success make him an invaluable team player.”</p><div class="t-person"><span class="t-avatar av-5 t-pic" style="--pic:url('assets/person-ilya.jpg')">IM</span><span><b>Ilya Melnik</b><i>Senior Designer · Google</i></span></div></article><article class="t-card"><span class="t-logo">EPAM · Novocure</span><p class="t-quote">“Since I first started onboarding to Novocure, Temuri's presence was felt. The previous lead had normally been hands-off with the day-to-day work because Temuri properly handled tasks — as well as the management of work throughout the team.”</p><div class="t-person"><span class="t-avatar av-1 t-pic" style="--pic:url('assets/person-jamell.jpg')">JE</span><span><b>Jamell Evans</b><i>Director, Experience Design · New York</i></span></div></article><article class="t-card"><span class="t-logo">Project delivery</span><p class="t-quote">“It is rare to find a designer who truly understands the technical side of development — Temo is exactly that person. Every handoff was seamless.”</p><div class="t-person"><span class="t-avatar av-7">VY</span><span><b>Viktor Yermolovich</b><i>Project Manager</i></span></div></article><article class="t-card"><span class="t-logo">EPAM · Rogers</span><p class="t-quote">“Temuri is a skilled designer who provides a lot of value to our client, Rogers. He designed an experience that is expected to be one of the big successes for 2023. Our EPAM team and our Rogers stakeholders very much value Temo's point of view.”</p><div class="t-person"><span class="t-avatar av-2 t-pic" style="--pic:url('assets/person-jane.jpg')">JT</span><span><b>Jayne Thomas</b><i>Associate Director, Experience Design</i></span></div></article><article class="t-card"><span class="t-logo">Google</span><p class="t-quote">“Temuri is an exceptional designer who consistently delivers outstanding results, exceeding expectations with attention to detail and an ability to design optimal experiences within given business and technical restrictions. His self-sufficient approach to work, talent for diving deep into problems, providing valuable feedback to colleagues, and contributing to the team’s success make him an invaluable team player.”</p><div class="t-person"><span class="t-avatar av-5 t-pic" style="--pic:url('assets/person-ilya.jpg')">IM</span><span><b>Ilya Melnik</b><i>Senior Designer · Google</i></span></div></article>
-      </div>
-      <div class="t-row t-row-b">
-        <article class="t-card"><span class="t-logo">goLance</span><p class="t-quote">“Temuri made a fantastic impact as a UX/UI specialist — elevating the quality of our product design and user experience, improving existing features while bringing strong design thinking and execution to new ones.”</p><div class="t-person"><span class="t-avatar av-3 t-pic" style="--pic:url('assets/person-andres.jpg')">AK</span><span><b>Andrés Klein</b><i>Product Executive · former CPO/COO, goLance</i></span></div></article><article class="t-card"><span class="t-logo">goLance</span><p class="t-quote">“An exceptional talent. Temuri consistently demonstrated a high level of professionalism and delivered outstanding design work. His ability to translate complex ideas into intuitive, visually compelling designs made a real impact across the board.”</p><div class="t-person"><span class="t-avatar av-4 t-pic" style="--pic:url('assets/person-rebecca.jpg')">RR</span><span><b>Rebecca Rosas</b><i>Head of People &amp; Business Strategy</i></span></div></article><article class="t-card"><span class="t-logo">EPAM · Rogers</span><p class="t-quote">“It was such a pleasure having you as part of my team on the RCOM-ISSP project. A consummate team player; any project would be lucky to have Temuri as a member.”</p><div class="t-person"><span class="t-avatar av-6 t-pic" style="--pic:url('assets/person-enoch.jpg')">EH</span><span><b>Enoch Hui</b><i>Lead Designer · Canada</i></span></div></article><a class="t-card t-more" href="https://www.linkedin.com/in/temuri-razmadze/details/recommendations/" target="_blank" rel="noopener"><p class="t-quote">Want more? The full recommendations live on LinkedIn.</p><span class="card-cta">Read them all <span class="btn-arrow">→</span></span></a><article class="t-card"><span class="t-logo">goLance</span><p class="t-quote">“Temuri made a fantastic impact as a UX/UI specialist — elevating the quality of our product design and user experience, improving existing features while bringing strong design thinking and execution to new ones.”</p><div class="t-person"><span class="t-avatar av-3 t-pic" style="--pic:url('assets/person-andres.jpg')">AK</span><span><b>Andrés Klein</b><i>Product Executive · former CPO/COO, goLance</i></span></div></article><article class="t-card"><span class="t-logo">goLance</span><p class="t-quote">“An exceptional talent. Temuri consistently demonstrated a high level of professionalism and delivered outstanding design work. His ability to translate complex ideas into intuitive, visually compelling designs made a real impact across the board.”</p><div class="t-person"><span class="t-avatar av-4 t-pic" style="--pic:url('assets/person-rebecca.jpg')">RR</span><span><b>Rebecca Rosas</b><i>Head of People &amp; Business Strategy</i></span></div></article><article class="t-card"><span class="t-logo">EPAM · Rogers</span><p class="t-quote">“It was such a pleasure having you as part of my team on the RCOM-ISSP project. A consummate team player; any project would be lucky to have Temuri as a member.”</p><div class="t-person"><span class="t-avatar av-6 t-pic" style="--pic:url('assets/person-enoch.jpg')">EH</span><span><b>Enoch Hui</b><i>Lead Designer · Canada</i></span></div></article><a class="t-card t-more" href="https://www.linkedin.com/in/temuri-razmadze/details/recommendations/" target="_blank" rel="noopener"><p class="t-quote">Want more? The full recommendations live on LinkedIn.</p><span class="card-cta">Read them all <span class="btn-arrow">→</span></span></a>
-      </div>
+      <div class="t-row"><article class="t-card t-photo"><img class="t-photo-img" src="assets/person-andres-bg.jpg" alt="Andrés Klein" loading="lazy"><span class="t-brand t-brand--knockout"><img class="t-blogo-golance" src="assets/logo-golance-color.svg" alt="goLance" height="19"></span><div class="t-photo-body"><p class="t-quote">“Temuri made a fantastic impact as a UX/UI specialist — elevating the quality of our product design and user experience.”</p><div class="t-photo-attr"><b>Andrés Klein</b><i>Product Executive · former CPO/COO</i></div></div></article><article class="t-card"><span class="t-brand"><img class="t-blogo-novocure" src="assets/logo-novocure-color.svg" alt="Novocure" height="14"></span><p class="t-quote">“Since I first started onboarding to Novocure, Temuri’s presence was felt. The previous lead had normally been hands-off with the day-to-day work because Temuri properly handled tasks — as well as the management of work throughout the team.”</p><div class="t-person"><span class="t-avatar av-1 t-pic" style="--pic:url('assets/person-jamell.jpg')">JE</span><span><b>Jamell Evans</b><i>Director, Experience Design · EPAM · New York</i></span></div></article><article class="t-card"><span class="t-brand"><span class="t-blogo-google"><b style="color:#4285F4">G</b><b style="color:#EA4335">o</b><b style="color:#FBBC05">o</b><b style="color:#4285F4">g</b><b style="color:#34A853">l</b><b style="color:#EA4335">e</b></span></span><p class="t-quote">“Temuri is an exceptional designer who consistently delivers outstanding results, exceeding expectations with attention to detail and an ability to design optimal experiences within given business and technical restrictions.”</p><div class="t-person"><span class="t-avatar av-5 t-pic" style="--pic:url('assets/person-ilya.jpg')">IM</span><span><b>Ilya Melnik</b><i>Senior Designer</i></span></div></article><article class="t-card"><span class="t-brand"><img class="t-blogo-rogers" src="assets/logo-rogers-color.svg" alt="Rogers" height="16"></span><p class="t-quote">“Temuri is a skilled designer who provides a lot of value to our client, Rogers. He designed an experience that is expected to be one of the big successes for 2023. Our EPAM team and our Rogers stakeholders very much value Temo’s point of view.”</p><div class="t-person"><span class="t-avatar av-2 t-pic" style="--pic:url('assets/person-jane.jpg')">JT</span><span><b>Jayne Thomas</b><i>Associate Director, Experience Design · EPAM</i></span></div></article><article aria-hidden="true" class="t-card t-photo"><img class="t-photo-img" src="assets/person-andres-bg.jpg" alt="Andrés Klein" loading="lazy"><span class="t-brand t-brand--knockout"><img class="t-blogo-golance" src="assets/logo-golance-color.svg" alt="goLance" height="19"></span><div class="t-photo-body"><p class="t-quote">“Temuri made a fantastic impact as a UX/UI specialist — elevating the quality of our product design and user experience.”</p><div class="t-photo-attr"><b>Andrés Klein</b><i>Product Executive · former CPO/COO</i></div></div></article><article aria-hidden="true" class="t-card"><span class="t-brand"><img class="t-blogo-novocure" src="assets/logo-novocure-color.svg" alt="Novocure" height="14"></span><p class="t-quote">“Since I first started onboarding to Novocure, Temuri’s presence was felt. The previous lead had normally been hands-off with the day-to-day work because Temuri properly handled tasks — as well as the management of work throughout the team.”</p><div class="t-person"><span class="t-avatar av-1 t-pic" style="--pic:url('assets/person-jamell.jpg')">JE</span><span><b>Jamell Evans</b><i>Director, Experience Design · EPAM · New York</i></span></div></article><article aria-hidden="true" class="t-card"><span class="t-brand"><span class="t-blogo-google"><b style="color:#4285F4">G</b><b style="color:#EA4335">o</b><b style="color:#FBBC05">o</b><b style="color:#4285F4">g</b><b style="color:#34A853">l</b><b style="color:#EA4335">e</b></span></span><p class="t-quote">“Temuri is an exceptional designer who consistently delivers outstanding results, exceeding expectations with attention to detail and an ability to design optimal experiences within given business and technical restrictions.”</p><div class="t-person"><span class="t-avatar av-5 t-pic" style="--pic:url('assets/person-ilya.jpg')">IM</span><span><b>Ilya Melnik</b><i>Senior Designer</i></span></div></article><article aria-hidden="true" class="t-card"><span class="t-brand"><img class="t-blogo-rogers" src="assets/logo-rogers-color.svg" alt="Rogers" height="16"></span><p class="t-quote">“Temuri is a skilled designer who provides a lot of value to our client, Rogers. He designed an experience that is expected to be one of the big successes for 2023. Our EPAM team and our Rogers stakeholders very much value Temo’s point of view.”</p><div class="t-person"><span class="t-avatar av-2 t-pic" style="--pic:url('assets/person-jane.jpg')">JT</span><span><b>Jayne Thomas</b><i>Associate Director, Experience Design · EPAM</i></span></div></article></div>
+      <div class="t-row t-row-b"><article class="t-card t-photo t-photo--bright"><img class="t-photo-img" src="assets/person-rebecca-bg.jpg" alt="Rebecca Rosas" loading="lazy"><span class="t-brand t-brand--knockout"><img class="t-blogo-golance" src="assets/logo-golance-color.svg" alt="goLance" height="19"></span><div class="t-photo-body"><p class="t-quote">“An exceptional talent. Temuri consistently demonstrated a high level of professionalism and delivered outstanding design work.”</p><div class="t-photo-attr"><b>Rebecca Rosas</b><i>Head of People &amp; Business Strategy</i></div></div></article><article class="t-card"><span class="t-brand t-brand--label">Project delivery</span><p class="t-quote">“It is rare to find a designer who truly understands the technical side of development — Temo is exactly that person. Every handoff was seamless.”</p><div class="t-person"><span class="t-avatar av-7">VY</span><span><b>Viktor Yermolovich</b><i>Project Manager</i></span></div></article><article class="t-card"><span class="t-brand"><img class="t-blogo-epam" src="assets/logo-epam-color.svg" alt="EPAM" height="22"></span><p class="t-quote">“It was such a pleasure having you as part of my team on the RCOM-ISSP project. A consummate team player; any project would be lucky to have Temuri as a member.”</p><div class="t-person"><span class="t-avatar av-6 t-pic" style="--pic:url('assets/person-enoch.jpg')">EH</span><span><b>Enoch Hui</b><i>Lead Designer · Rogers account · Canada</i></span></div></article><a class="t-card t-more" href="https://www.linkedin.com/in/temuri-razmadze/details/recommendations/" target="_blank" rel="noopener"><p class="t-quote">Want more? The full recommendations live on LinkedIn.</p><span class="card-cta">Read them all <span class="btn-arrow">→</span></span></a><article aria-hidden="true" class="t-card t-photo t-photo--bright"><img class="t-photo-img" src="assets/person-rebecca-bg.jpg" alt="Rebecca Rosas" loading="lazy"><span class="t-brand t-brand--knockout"><img class="t-blogo-golance" src="assets/logo-golance-color.svg" alt="goLance" height="19"></span><div class="t-photo-body"><p class="t-quote">“An exceptional talent. Temuri consistently demonstrated a high level of professionalism and delivered outstanding design work.”</p><div class="t-photo-attr"><b>Rebecca Rosas</b><i>Head of People &amp; Business Strategy</i></div></div></article><article aria-hidden="true" class="t-card"><span class="t-brand t-brand--label">Project delivery</span><p class="t-quote">“It is rare to find a designer who truly understands the technical side of development — Temo is exactly that person. Every handoff was seamless.”</p><div class="t-person"><span class="t-avatar av-7">VY</span><span><b>Viktor Yermolovich</b><i>Project Manager</i></span></div></article><article aria-hidden="true" class="t-card"><span class="t-brand"><img class="t-blogo-epam" src="assets/logo-epam-color.svg" alt="EPAM" height="22"></span><p class="t-quote">“It was such a pleasure having you as part of my team on the RCOM-ISSP project. A consummate team player; any project would be lucky to have Temuri as a member.”</p><div class="t-person"><span class="t-avatar av-6 t-pic" style="--pic:url('assets/person-enoch.jpg')">EH</span><span><b>Enoch Hui</b><i>Lead Designer · Rogers account · Canada</i></span></div></article><a aria-hidden="true" tabindex="-1" class="t-card t-more" href="https://www.linkedin.com/in/temuri-razmadze/details/recommendations/" target="_blank" rel="noopener"><p class="t-quote">Want more? The full recommendations live on LinkedIn.</p><span class="card-cta">Read them all <span class="btn-arrow">→</span></span></a></div>
     </div>
   </section>
 
