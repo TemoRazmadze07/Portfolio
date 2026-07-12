@@ -3,7 +3,7 @@
 from one data structure. Content source of truth: ../CASE_STUDIES.md.
 Regenerate: python3 build_cases.py
 """
-V = "35"  # cache-bust version, keep in sync with index.html
+V = "36"  # cache-bust version, keep in sync with index.html
 
 CASES = [
  dict(

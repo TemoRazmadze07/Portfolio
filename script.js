@@ -165,3 +165,52 @@
   }, { rootMargin: "100px 0px" });
   io.observe(panel);
 })();
+
+// Touch carousels: on coarse-pointer devices the CSS marquees become native
+// horizontal scrollers (see styles.css). Drive a gentle auto-advance here that
+// pauses while a finger is down and resumes ~1.6s after release — so a tap never
+// freezes it and swiping works like a carousel. Desktop keeps the CSS animation.
+(function () {
+  if (!window.matchMedia("(hover: none) and (pointer: coarse)").matches) return;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  function drive(el, durationSec, periods) {
+    if (!el) return;
+    let paused = false, resumeAt = 0, last = null, visible = true;
+    let loopW = el.scrollWidth / periods;      // width of one repeated set
+    let speed = loopW / durationSec;           // px per second (matches desktop cadence)
+    const recalc = () => { loopW = el.scrollWidth / periods; speed = loopW / durationSec; };
+    window.addEventListener("resize", recalc, { passive: true });
+    window.addEventListener("load", recalc);
+
+    const wrap = () => {
+      if (el.scrollLeft >= loopW) el.scrollLeft -= loopW;
+      else if (el.scrollLeft < 0) el.scrollLeft += loopW;
+    };
+    // finger down anywhere on the track pauses it; release (anywhere) resumes soon
+    el.addEventListener("pointerdown", () => { paused = true; resumeAt = Infinity; }, { passive: true });
+    const release = () => { resumeAt = performance.now() + 1600; };
+    document.addEventListener("pointerup", release, { passive: true });
+    document.addEventListener("pointercancel", release, { passive: true });
+    el.addEventListener("scroll", wrap, { passive: true }); // keep manual scroll seamless
+
+    // don't spend cycles auto-advancing while the carousel is offscreen
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(
+        (es) => { visible = es[es.length - 1].isIntersecting; },
+        { rootMargin: "60px 0px" }
+      ).observe(el);
+    }
+
+    requestAnimationFrame(function frame(t) {
+      if (last == null) last = t;
+      const dt = Math.min(0.05, (t - last) / 1000); last = t;
+      if (paused && performance.now() >= resumeAt) paused = false;
+      if (visible && !paused) { el.scrollLeft += speed * dt; wrap(); }
+      requestAnimationFrame(frame);
+    });
+  }
+
+  document.querySelectorAll(".t-row").forEach((row, i) => drive(row, i === 0 ? 60 : 75, 2));
+  drive(document.querySelector(".marquee"), 30, 4);
+})();

@@ -503,6 +503,26 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
 .t-more { justify-content: center; gap: 12px; background: var(--tint-blue); border: none; text-decoration: none; }
 .t-more .card-cta { color: var(--accent-ink); }
 
+/* Touch devices: turn the auto-scroll marquees into native swipeable carousels.
+   The CSS transform animation can't be swiped and its :hover pause sticks on a
+   tap (freezing it). On coarse pointers we drop the animation, make the track
+   natively scrollable, and let script.js drive a gentle auto-advance that pauses
+   only while a finger is down — so a tap never freezes it and you can swipe. */
+@media (hover: none) and (pointer: coarse) {
+  .t-row {
+    width: auto; overflow-x: auto; overflow-y: hidden; animation: none; transform: none;
+    -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain;
+    scrollbar-width: none; -ms-overflow-style: none;
+  }
+  .t-row::-webkit-scrollbar { display: none; }
+  .marquee {
+    overflow-x: auto; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain;
+    scrollbar-width: none; -ms-overflow-style: none;
+  }
+  .marquee::-webkit-scrollbar { display: none; }
+  .marquee-track { animation: none; }
+}
+
 /* ---------- case-study pages ---------- */
 .case-hero { padding: 56px 0 8px; }
 .case-back { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14px; color: var(--mute); text-decoration: none; margin-bottom: 30px; }
