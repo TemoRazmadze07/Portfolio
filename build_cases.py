@@ -3,7 +3,7 @@
 from one data structure. Content source of truth: ../CASE_STUDIES.md.
 Regenerate: python3 build_cases.py
 """
-V = "33"  # cache-bust version, keep in sync with index.html
+V = "34"  # cache-bust version, keep in sync with index.html
 
 CASES = [
  dict(
@@ -106,11 +106,32 @@ HEAD = """<!DOCTYPE html>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{title} — Temuri Razmadze</title>
 <meta name="description" content="Case study: {kicker}. {tiles_line}">
+<link rel="canonical" href="https://temorazmadze07.github.io/Portfolio/{slug}.html">
+
+<!-- Open Graph / social share preview -->
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Temuri Razmadze">
+<meta property="og:title" content="{title} — Temuri Razmadze">
+<meta property="og:description" content="Case study · {kicker}. {tiles_line}">
+<meta property="og:url" content="https://temorazmadze07.github.io/Portfolio/{slug}.html">
+<meta property="og:image" content="https://temorazmadze07.github.io/Portfolio/assets/og-image.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{title} — Temuri Razmadze">
+<meta name="twitter:description" content="Case study · {kicker}. {tiles_line}">
+<meta name="twitter:image" content="https://temorazmadze07.github.io/Portfolio/assets/og-image.png">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css?v={v}">
-<link rel="icon" href="data:,">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="assets/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="shortcut icon" href="assets/favicon.ico">
 <script>if ("scrollRestoration" in history) history.scrollRestoration = "manual";</script>
 </head>
 <body>
@@ -148,7 +169,7 @@ def page(c, nxt):
     meta = "".join(f'<div><b>{k}</b><span>{v}</span></div>' for k,v in c["meta"])
     also = "".join(f"<li>{x}</li>" for x in c["also"])
     tiles_line = " · ".join(f"{n} {l}" for n,l in c["tiles"])
-    return HEAD.format(title=c["title"], kicker=c["kicker"], tiles_line=tiles_line, v=V) + f"""
+    return HEAD.format(title=c["title"], kicker=c["kicker"], tiles_line=tiles_line, v=V, slug=c["slug"]) + f"""
 <main>
   <section class="case-hero">
     <div class="wrap">
