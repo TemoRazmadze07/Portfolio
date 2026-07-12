@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520">
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" stop-color="#e8f0fc"/><stop offset=".55" stop-color="#b3cbf0"/><stop offset="1" stop-color="#2e5bff"/>
+</linearGradient>
+<linearGradient id="chart" x1="0" y1="1" x2="0" y2="0">
+<stop offset="0" stop-color="#2e5bff" stop-opacity=".02"/><stop offset="1" stop-color="#2e5bff" stop-opacity=".34"/>
+</linearGradient>
+<filter id="sh" x="-30%" y="-30%" width="160%" height="180%">
+<feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#0e1b2c" flood-opacity=".28"/>
+</filter>
+<pattern id="dots" width="22" height="22" patternUnits="userSpaceOnUse">
+<circle cx="2" cy="2" r="1.8" fill="#1d3f8f" opacity=".16"/>
+</pattern>
+</defs>
+
+<rect width="800" height="520" fill="url(#bg)"/>
+<circle cx="680" cy="40" r="200" fill="#ffffff" opacity=".14"/>
+<circle cx="60" cy="490" r="160" fill="#ffffff" opacity=".10"/>
+<rect x="500" y="330" width="260" height="160" fill="url(#dots)"/>
+<rect x="40" y="30" width="180" height="120" fill="url(#dots)"/>
+
+<!-- browser: business banking console -->
+<g transform="rotate(-2 305 253)" filter="url(#sh)">
+  <rect x="70" y="88" width="470" height="330" rx="16" fill="#ffffff"/>
+  <circle cx="94" cy="110" r="4.5" fill="#e6604d"/><circle cx="110" cy="110" r="4.5" fill="#eec22f"/><circle cx="126" cy="110" r="4.5" fill="#5fc26a"/>
+  <rect x="150" y="101" width="300" height="18" rx="9" fill="#eef2f8"/>
+  <line x1="70" y1="130" x2="540" y2="130" stroke="#e8ecf3" stroke-width="1.5"/>
+  <!-- sidebar -->
+  <rect x="70" y="130" width="104" height="288" fill="#f4f7fb"/>
+  <circle cx="94" cy="158" r="9" fill="#2e5bff"/>
+  <rect x="112" y="152" width="44" height="11" rx="5.5" fill="#1d3f8f" opacity=".5"/>
+  <rect x="84" y="186" width="76" height="22" rx="11" fill="#2e5bff" opacity=".92"/>
+  <rect x="94" y="222" width="58" height="9" rx="4.5" fill="#1d3f8f" opacity=".3"/>
+  <rect x="94" y="248" width="64" height="9" rx="4.5" fill="#1d3f8f" opacity=".3"/>
+  <rect x="94" y="274" width="50" height="9" rx="4.5" fill="#1d3f8f" opacity=".3"/>
+  <rect x="94" y="300" width="60" height="9" rx="4.5" fill="#1d3f8f" opacity=".3"/>
+  <!-- main: title + account cards -->
+  <rect x="192" y="150" width="150" height="15" rx="7.5" fill="#1d3f8f" opacity=".6"/>
+  <rect x="192" y="174" width="96" height="9" rx="4.5" fill="#1d3f8f" opacity=".26"/>
+  <rect x="192" y="200" width="104" height="62" rx="10" fill="#2e5bff"/>
+  <rect x="204" y="212" width="52" height="8" rx="4" fill="#ffffff" opacity=".65"/>
+  <rect x="204" y="236" width="72" height="12" rx="6" fill="#ffffff" opacity=".92"/>
+  <rect x="306" y="200" width="104" height="62" rx="10" fill="#eef2f8"/>
+  <rect x="318" y="212" width="52" height="8" rx="4" fill="#1d3f8f" opacity=".3"/>
+  <rect x="318" y="236" width="64" height="12" rx="6" fill="#1d3f8f" opacity=".5"/>
+  <rect x="420" y="200" width="96" height="62" rx="10" fill="#eef2f8"/>
+  <rect x="432" y="212" width="46" height="8" rx="4" fill="#1d3f8f" opacity=".3"/>
+  <rect x="432" y="236" width="56" height="12" rx="6" fill="#1d3f8f" opacity=".5"/>
+  <!-- transactions -->
+  <rect x="192" y="282" width="180" height="11" rx="5.5" fill="#1d3f8f" opacity=".45"/>
+  <g opacity=".9">
+    <circle cx="204" cy="318" r="9" fill="#dce6f6"/><rect x="222" y="313" width="110" height="9" rx="4.5" fill="#1d3f8f" opacity=".3"/><rect x="330" y="313" width="42" height="9" rx="4.5" fill="#0a7d43" opacity=".5"/>
+    <circle cx="204" cy="346" r="9" fill="#dce6f6"/><rect x="222" y="341" width="92" height="9" rx="4.5" fill="#1d3f8f" opacity=".3"/><rect x="330" y="341" width="34" height="9" rx="4.5" fill="#1d3f8f" opacity=".35"/>
+    <circle cx="204" cy="374" r="9" fill="#dce6f6"/><rect x="222" y="369" width="120" height="9" rx="4.5" fill="#1d3f8f" opacity=".3"/><rect x="330" y="369" width="46" height="9" rx="4.5" fill="#1d3f8f" opacity=".35"/>
+  </g>
+  <!-- mini area chart -->
+  <path d="M400 388 L400 344 C418 340 428 326 446 330 C464 334 470 314 488 310 C500 307 508 300 516 296 L516 388 Z" fill="url(#chart)"/>
+  <path d="M400 344 C418 340 428 326 446 330 C464 334 470 314 488 310 C500 307 508 300 516 296" fill="none" stroke="#2e5bff" stroke-width="2.5" stroke-linecap="round"/>
+</g>
+
+<!-- phone: mobile bank -->
+<g transform="rotate(4 650 300)" filter="url(#sh)">
+  <rect x="566" y="128" width="168" height="344" rx="26" fill="#0e1b2c"/>
+  <rect x="573" y="135" width="154" height="330" rx="20" fill="#ffffff"/>
+  <rect x="622" y="143" width="56" height="14" rx="7" fill="#0e1b2c"/>
+  <rect x="589" y="172" width="122" height="70" rx="12" fill="#2e5bff"/>
+  <rect x="601" y="186" width="50" height="8" rx="4" fill="#ffffff" opacity=".6"/>
+  <rect x="601" y="208" width="84" height="14" rx="7" fill="#ffffff" opacity=".95"/>
+  <g>
+    <circle cx="606" cy="278" r="15" fill="#eef2f8"/><circle cx="645" cy="278" r="15" fill="#eef2f8"/><circle cx="684" cy="278" r="15" fill="#eef2f8"/>
+    <rect x="600" y="272" width="12" height="12" rx="3" fill="#2e5bff" opacity=".6"/>
+    <rect x="639" y="272" width="12" height="12" rx="3" fill="#2e5bff" opacity=".6"/>
+    <rect x="678" y="272" width="12" height="12" rx="3" fill="#2e5bff" opacity=".6"/>
+  </g>
+  <rect x="589" y="312" width="122" height="1.5" fill="#e8ecf3"/>
+  <g opacity=".92">
+    <circle cx="601" cy="336" r="8" fill="#dce6f6"/><rect x="617" y="331" width="62" height="8" rx="4" fill="#1d3f8f" opacity=".32"/><rect x="687" y="331" width="22" height="8" rx="4" fill="#1d3f8f" opacity=".4"/>
+    <circle cx="601" cy="364" r="8" fill="#dce6f6"/><rect x="617" y="359" width="52" height="8" rx="4" fill="#1d3f8f" opacity=".32"/><rect x="687" y="359" width="22" height="8" rx="4" fill="#0a7d43" opacity=".5"/>
+    <circle cx="601" cy="392" r="8" fill="#dce6f6"/><rect x="617" y="387" width="68" height="8" rx="4" fill="#1d3f8f" opacity=".32"/><rect x="687" y="387" width="22" height="8" rx="4" fill="#1d3f8f" opacity=".4"/>
+  </g>
+  <rect x="589" y="420" width="122" height="30" rx="15" fill="#2e5bff"/>
+  <rect x="625" y="431" width="50" height="8" rx="4" fill="#ffffff" opacity=".9"/>
+</g>
+
+<!-- award badge -->
+<g transform="rotate(-6 96 96)" filter="url(#sh)">
+  <circle cx="96" cy="96" r="34" fill="#ffffff"/>
+  <path d="M96 78 L101.5 89.5 L114 91.2 L105 100 L107.2 112.5 L96 106.6 L84.8 112.5 L87 100 L78 91.2 L90.5 89.5 Z" fill="#eec22f"/>
+</g>
+</svg>
