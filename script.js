@@ -166,19 +166,44 @@
   io.observe(panel);
 })();
 
-// Touch carousels: on coarse-pointer devices the CSS marquees become native
-// horizontal scrollers (see styles.css). Drive a gentle auto-advance here that
-// pauses while a finger is down and resumes ~1.6s after release — so a tap never
-// freezes it and swiping works like a carousel. Desktop keeps the CSS animation.
+// Touch carousels: on coarse-pointer devices the CSS transform-marquees can't be
+// swiped and their :hover pause sticks on a tap. So on touch we turn the tracks
+// into native horizontal scrollers (see styles.css) and drive a gentle auto-
+// advance here that PAUSES while a finger is down and, ~1.5s after release, EASES
+// back into motion (ramps the speed up) — mirroring the desktop hover behaviour.
+// Testimonials also collapse from two rows to one ordered row on mobile.
 (function () {
   if (!window.matchMedia("(hover: none) and (pointer: coarse)").matches) return;
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
+  // Rebuild the two testimonial rows into a single row in a deliberate order:
+  // lead with a photo, then two cards, then the other photo, then the rest.
+  function reflowTestimonialsToOneRow() {
+    const m = document.querySelector(".t-marquee");
+    if (!m) return null;
+    const orig = {};
+    m.querySelectorAll(".t-card:not([aria-hidden])").forEach((c) => { orig[c.dataset.p] = c; });
+    const order = ["andres", "ilya", "jamell", "rebecca", "jayne", "viktor", "enoch", "more"];
+    const row = document.createElement("div");
+    row.className = "t-row";
+    order.forEach((k) => { if (orig[k]) row.appendChild(orig[k]); });          // move the originals
+    order.forEach((k) => {                                                     // + a hidden clone set for the loop
+      if (!orig[k]) return;
+      const d = orig[k].cloneNode(true);
+      d.setAttribute("aria-hidden", "true");
+      if (d.tagName === "A") d.setAttribute("tabindex", "-1");
+      row.appendChild(d);
+    });
+    m.innerHTML = "";
+    m.appendChild(row);
+    return row;
+  }
+
   function drive(el, durationSec, periods) {
     if (!el) return;
-    let paused = false, resumeAt = 0, last = null, visible = true;
+    let paused = false, resumeAt = 0, rampStart = 0, last = null, visible = true;
     let loopW = el.scrollWidth / periods;      // width of one repeated set
-    let speed = loopW / durationSec;           // px per second (matches desktop cadence)
+    let speed = loopW / durationSec;           // px per second
     const recalc = () => { loopW = el.scrollWidth / periods; speed = loopW / durationSec; };
     window.addEventListener("resize", recalc, { passive: true });
     window.addEventListener("load", recalc);
@@ -187,11 +212,12 @@
       if (el.scrollLeft >= loopW) el.scrollLeft -= loopW;
       else if (el.scrollLeft < 0) el.scrollLeft += loopW;
     };
-    // finger down anywhere on the track pauses it; release (anywhere) resumes soon
-    el.addEventListener("pointerdown", () => { paused = true; resumeAt = Infinity; }, { passive: true });
-    const release = () => { resumeAt = performance.now() + 1600; };
-    document.addEventListener("pointerup", release, { passive: true });
-    document.addEventListener("pointercancel", release, { passive: true });
+    // touch events are reliable on touch devices (pointer events get canceled once
+    // native scrolling takes over): finger down pauses, lift schedules the resume.
+    el.addEventListener("touchstart", () => { paused = true; resumeAt = Infinity; }, { passive: true });
+    const resumeSoon = () => { resumeAt = performance.now() + 1500; };
+    el.addEventListener("touchend", resumeSoon, { passive: true });
+    el.addEventListener("touchcancel", resumeSoon, { passive: true });
     el.addEventListener("scroll", wrap, { passive: true }); // keep manual scroll seamless
 
     // don't spend cycles auto-advancing while the carousel is offscreen
@@ -205,12 +231,63 @@
     requestAnimationFrame(function frame(t) {
       if (last == null) last = t;
       const dt = Math.min(0.05, (t - last) / 1000); last = t;
-      if (paused && performance.now() >= resumeAt) paused = false;
-      if (visible && !paused) { el.scrollLeft += speed * dt; wrap(); }
+      if (paused && performance.now() >= resumeAt) { paused = false; rampStart = performance.now(); }
+      if (visible && !paused) {
+        const ramp = Math.min(1, (performance.now() - rampStart) / 900); // ease speed back in
+        el.scrollLeft += speed * ramp * dt;
+        wrap();
+      }
       requestAnimationFrame(frame);
     });
   }
 
-  document.querySelectorAll(".t-row").forEach((row, i) => drive(row, i === 0 ? 60 : 75, 2));
-  drive(document.querySelector(".marquee"), 30, 4);
+  const oneRow = reflowTestimonialsToOneRow();
+  drive(oneRow, 120, 2);                              // testimonials (8 cards, gentle)
+  drive(document.querySelector(".work-track"), 38, 2); // projects
+})();
+
+/* ---------- hero deck: rotating project screens ---------- */
+// Cycles the stacked cards: the front one lifts away, the rest promote, and the
+// outgoing card rejoins the back of the stack. Pauses on hover and offscreen;
+// never starts under prefers-reduced-motion (the stack just sits still).
+(() => {
+  const art = document.querySelector(".hero-art");
+  const deck = document.querySelector(".deck");
+  if (!art || !deck) return;
+  const CLS = ["d-front", "d-mid", "d-back"];
+  const order = Array.from(deck.querySelectorAll(".deck-card"));
+  if (order.length < 2) return;
+  const place = (c, i) => {
+    c.classList.remove("d-front", "d-mid", "d-back", "d-hidden", "d-out");
+    c.classList.add(i < CLS.length ? CLS[i] : "d-hidden");
+  };
+  order.forEach(place);
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  const advance = () => {
+    const front = order.shift();
+    order.push(front);
+    order.forEach((c, i) => { if (c !== front) place(c, i); });
+    front.classList.remove("d-front");
+    front.classList.add("d-out");
+    // once the fly-out finishes, snap (transition-suppressed) to the stack's tail
+    setTimeout(() => {
+      front.classList.add("no-t");
+      place(front, order.indexOf(front));
+      void front.offsetWidth; // flush styles so the next promotion animates
+      front.classList.remove("no-t");
+    }, 800);
+  };
+
+  let timer = setInterval(advance, 4200);
+  const stop = () => { if (timer) { clearInterval(timer); timer = null; } };
+  const start = () => { if (!timer) timer = setInterval(advance, 4200); };
+  art.addEventListener("mouseenter", stop);
+  art.addEventListener("mouseleave", start);
+  // don't churn while the hero is scrolled away
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver((es) => {
+      if (es[es.length - 1].isIntersecting) start(); else stop();
+    }).observe(deck);
+  }
 })();

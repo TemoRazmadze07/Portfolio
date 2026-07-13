@@ -444,7 +444,7 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
   transition: transform .6s cubic-bezier(.2,.65,.25,1);
 }
 @media (max-width: 640px) {
-  .t-photo { width: 86vw; max-width: 360px; min-height: 400px; }
+  .t-photo { width: 86vw; max-width: 380px; min-height: 360px; }
   .t-photo-img { object-position: center 28%; }
 }
 .t-photo:hover .t-photo-img { transform: scale(1.05); }
@@ -503,24 +503,25 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
 .t-more { justify-content: center; gap: 12px; background: var(--tint-blue); border: none; text-decoration: none; }
 .t-more .card-cta { color: var(--accent-ink); }
 
-/* Touch devices: turn the auto-scroll marquees into native swipeable carousels.
-   The CSS transform animation can't be swiped and its :hover pause sticks on a
-   tap (freezing it). On coarse pointers we drop the animation, make the track
-   natively scrollable, and let script.js drive a gentle auto-advance that pauses
-   only while a finger is down — so a tap never freezes it and you can swipe. */
+/* Touch devices: turn the content marquees (testimonials + projects) into native
+   swipeable carousels. The CSS transform animation can't be swiped and its :hover
+   pause sticks on a tap (freezing it). On coarse pointers we drop the animation and
+   make the track natively scrollable; script.js drives a gentle auto-advance that
+   pauses while a finger is down and eases back in after release. (The decorative
+   logo strip keeps its simple CSS auto-scroll — it's not meant to be swiped.) */
 @media (hover: none) and (pointer: coarse) {
-  .t-row {
+  .t-row, .work-track {
     width: auto; overflow-x: auto; overflow-y: hidden; animation: none; transform: none;
     -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain;
     scrollbar-width: none; -ms-overflow-style: none;
   }
-  .t-row::-webkit-scrollbar { display: none; }
-  .marquee {
-    overflow-x: auto; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain;
-    scrollbar-width: none; -ms-overflow-style: none;
-  }
-  .marquee::-webkit-scrollbar { display: none; }
-  .marquee-track { animation: none; }
+  .t-row::-webkit-scrollbar, .work-track::-webkit-scrollbar { display: none; }
+  /* one testimonial per view (they scroll in a single row on mobile) */
+  .t-card { width: 86vw; max-width: 380px; }
+  /* all cards share the tallest card's height; centre the plain cards' content so
+     short quotes (e.g. Viktor) read as balanced rather than leaving a big gap */
+  .t-card:not(.t-photo):not(.t-more) { justify-content: center; }
+  .t-card:not(.t-photo) .t-person { margin-top: 0; }
 }
 
 /* ---------- case-study pages ---------- */
@@ -704,15 +705,41 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
 @keyframes shimmer { 50% { background-position: 100% 0; } }
 
 .hero-art { position: relative; height: 540px; }
-.fx { position: absolute; will-change: transform; }
+.fx { position: absolute; will-change: transform; z-index: 5; }
 .fx-inner { animation: float 7s ease-in-out infinite; }
-.f1 { left: 2%; top: 5%; }   .f1 .fx-inner { animation-duration: 8s; }
-.f2 { left: 48%; top: 16%; width: 240px; } .f2 .fx-inner { animation-duration: 10s; animation-delay: -3s; }
-.f3 { left: 36%; top: 40%; } .f3 .fx-inner { animation-duration: 6.5s; animation-delay: -1.5s; }
-.f4 { left: 0%; top: 48%; }  .f4 .fx-inner { animation-duration: 9s; animation-delay: -4s; }
-.f5 { left: 58%; top: 62%; } .f5 .fx-inner { animation-duration: 7.5s; animation-delay: -2s; }
-.f6 { left: 20%; top: 78%; } .f6 .fx-inner { animation-duration: 8.5s; animation-delay: -5s; }
+.f1 { left: -2%; top: 0; }   .f1 .fx-inner { animation-duration: 8s; }
+.f3 { left: 80%; top: 60%; } .f3 .fx-inner { animation-duration: 6.5s; animation-delay: -1.5s; }
+.f6 { left: 5%; top: 83%; }  .f6 .fx-inner { animation-duration: 8.5s; animation-delay: -5s; }
 @keyframes float { 50% { transform: translateY(-13px); } }
+
+/* ---------- hero deck: rotating project screens (prototype arts) ---------- */
+/* A stack of three visible cards with depth; script.js promotes the stack every
+   few seconds — the front card lifts away and rejoins the back. Swap the imgs
+   for real product screens when available. */
+.deck { position: absolute; left: 2%; right: 7%; top: 7%; height: 400px; }
+.deck-card {
+  position: absolute; inset: 0; overflow: hidden;
+  background: #fff; border: 1px solid var(--line); border-radius: 22px;
+  box-shadow: 0 34px 64px -26px rgba(14,27,44,.32);
+  opacity: 0;
+  transition: transform .75s cubic-bezier(.2,.65,.25,1), opacity .55s ease;
+}
+.deck-card img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.deck-tag {
+  position: absolute; left: 14px; bottom: 12px;
+  font-size: 12px; font-weight: 800; color: var(--ink);
+  background: color-mix(in srgb, #fff 86%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
+  padding: 6px 12px; border-radius: var(--r-pill);
+  opacity: 0; transition: opacity .4s ease .25s;
+}
+.d-front { opacity: 1; z-index: 3; transform: none; }
+.d-front .deck-tag { opacity: 1; }
+.d-mid   { opacity: 1; z-index: 2; transform: translate(5.5%, 5.5%) rotate(2.2deg) scale(.955); }
+.d-back  { opacity: 1; z-index: 1; transform: translate(11%, 11%) rotate(4.4deg) scale(.91); }
+.d-hidden{ opacity: 0; z-index: 0; transform: translate(11%, 11%) rotate(4.4deg) scale(.91); }
+.d-out   { opacity: 0; z-index: 4; transform: translate(-8%, -10%) rotate(-4deg); }
+.deck-card.no-t { transition: none; }
 
 .fx-glow { position: absolute; inset: -30px; background: radial-gradient(closest-side at 55% 45%, rgba(46,91,255,.15), transparent); }
 .fx-dots {
