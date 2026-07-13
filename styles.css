@@ -316,7 +316,8 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
    exactly where the first began. Each card owns its trailing gap via margin-right
    (not `gap`) so -50% is a pixel-perfect loop point regardless of card count. */
 .work-marquee {
-  overflow: hidden; padding: 18px 0 32px;
+  /* extra bottom room so the project cards' (large) hover shadow isn't clipped */
+  overflow: hidden; padding: 18px 0 52px;
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
   mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
 }
@@ -388,7 +389,9 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
 .words { padding: 88px 0 56px; }
 .sample-note { font-style: italic; }
 .t-marquee {
-  display: flex; flex-direction: column; gap: 20px; overflow: hidden; padding: 8px 0 12px;
+  /* generous vertical padding so the cards' box-shadows render inside the
+     overflow:hidden clip (which is needed to hide the scrolling track) */
+  display: flex; flex-direction: column; gap: 20px; overflow: hidden; padding: 16px 0 40px;
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
   mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
 }
@@ -514,8 +517,12 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
     width: auto; overflow-x: auto; overflow-y: hidden; animation: none; transform: none;
     -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain;
     scrollbar-width: none; -ms-overflow-style: none;
+    /* the row is the scroll+clip box on mobile — pad it so card shadows show */
+    padding: 10px 0 28px;
   }
   .t-row::-webkit-scrollbar, .work-track::-webkit-scrollbar { display: none; }
+  /* the shadow room now lives on the scroller, so trim the marquee's own padding */
+  .t-marquee, .work-marquee { padding-top: 4px; padding-bottom: 8px; }
   /* one testimonial per view (they scroll in a single row on mobile) */
   .t-card { width: 86vw; max-width: 380px; }
   /* all cards share the tallest card's height; centre the plain cards' content so
@@ -712,34 +719,54 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
 .f6 { left: 5%; top: 83%; }  .f6 .fx-inner { animation-duration: 8.5s; animation-delay: -5s; }
 @keyframes float { 50% { transform: translateY(-13px); } }
 
-/* ---------- hero deck: rotating project screens (prototype arts) ---------- */
-/* A stack of three visible cards with depth; script.js promotes the stack every
-   few seconds — the front card lifts away and rejoins the back. Swap the imgs
-   for real product screens when available. */
-.deck { position: absolute; left: 2%; right: 7%; top: 7%; height: 400px; }
-.deck-card {
-  position: absolute; inset: 0; overflow: hidden;
+/* ---------- hero reel: framed Ken-Burns showreel (prototype arts) ---------- */
+/* One browser-framed "screen" playing a cut list: each shot's img runs a slow
+   zoom/pan (the m-* class picks the move), script.js dissolves between shots
+   and updates the lower-third tag + progress dots. The frame stays when the
+   imgs are swapped for real screens — or replaced by a looping mp4. */
+.hreel {
+  position: absolute; left: 0; right: 3%; top: 5%; height: 440px; margin: 0;
   background: #fff; border: 1px solid var(--line); border-radius: 22px;
-  box-shadow: 0 34px 64px -26px rgba(14,27,44,.32);
-  opacity: 0;
-  transition: transform .75s cubic-bezier(.2,.65,.25,1), opacity .55s ease;
+  box-shadow: 0 40px 80px -30px rgba(14,27,44,.35); overflow: hidden;
 }
-.deck-card img { display: block; width: 100%; height: 100%; object-fit: cover; }
-.deck-tag {
-  position: absolute; left: 14px; bottom: 12px;
+.hreel-chrome {
+  position: relative; z-index: 2; height: 34px;
+  display: flex; align-items: center; gap: 6px; padding: 0 14px;
+  background: #fff; border-bottom: 1px solid var(--line);
+}
+.hreel-chrome i { width: 9px; height: 9px; border-radius: 50%; background: #e3e6ec; }
+.hreel-stage { position: absolute; inset: 34px 0 0; overflow: hidden; }
+.hreel-shot { position: absolute; inset: 0; opacity: 0; transition: opacity 1s ease; }
+.hreel-shot.on { opacity: 1; z-index: 1; }
+.hreel-shot.on.out { opacity: 0; z-index: 2; } /* outgoing dissolves above the incoming */
+.hreel-shot img { display: block; width: 100%; height: 100%; object-fit: cover; }
+/* the move runs a hair longer than the shot is on screen, so it never freezes */
+.hreel-shot.on img { animation: 6.8s cubic-bezier(.3,.1,.3,1) forwards; }
+.m-in.on img     { animation-name: kb-in; }
+.m-mobile img    { transform-origin: 76% 55%; } /* dive toward the phone mock */
+.m-mobile.on img { animation-name: kb-mobile; }
+.m-pan.on img    { animation-name: kb-pan; }
+.m-out.on img    { animation-name: kb-out; }
+@keyframes kb-in     { from { transform: scale(1.03); } to { transform: scale(1.2) translate(-2.5%, -2%); } }
+@keyframes kb-mobile { from { transform: scale(1.35); } to { transform: scale(1.9); } }
+@keyframes kb-pan    { from { transform: scale(1.18) translateX(2.5%); } to { transform: scale(1.18) translateX(-3.5%); } }
+@keyframes kb-out    { from { transform: scale(1.24) translate(-2%, -1.5%); } to { transform: scale(1.04); } }
+.hreel-tag {
+  position: absolute; left: 14px; bottom: 12px; z-index: 3;
   font-size: 12px; font-weight: 800; color: var(--ink);
-  background: color-mix(in srgb, #fff 86%, transparent);
+  background: color-mix(in srgb, #fff 88%, transparent);
   border: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
   padding: 6px 12px; border-radius: var(--r-pill);
-  opacity: 0; transition: opacity .4s ease .25s;
 }
-.d-front { opacity: 1; z-index: 3; transform: none; }
-.d-front .deck-tag { opacity: 1; }
-.d-mid   { opacity: 1; z-index: 2; transform: translate(5.5%, 5.5%) rotate(2.2deg) scale(.955); }
-.d-back  { opacity: 1; z-index: 1; transform: translate(11%, 11%) rotate(4.4deg) scale(.91); }
-.d-hidden{ opacity: 0; z-index: 0; transform: translate(11%, 11%) rotate(4.4deg) scale(.91); }
-.d-out   { opacity: 0; z-index: 4; transform: translate(-8%, -10%) rotate(-4deg); }
-.deck-card.no-t { transition: none; }
+.hreel-tag.bump { animation: tag-rise .5s ease; }
+@keyframes tag-rise { from { transform: translateY(8px); opacity: 0; } }
+.hreel-dots { position: absolute; right: 16px; bottom: 18px; z-index: 3; display: flex; gap: 6px; }
+.hreel-dots i { width: 6px; height: 6px; border-radius: 50%; background: rgba(14,27,44,.22); transition: background .3s ease, transform .3s ease; }
+.hreel-dots i.on { background: var(--accent); transform: scale(1.25); }
+@media (prefers-reduced-motion: reduce) {
+  .hreel-shot { transition: none; }
+  .hreel-shot img { animation: none !important; }
+}
 
 .fx-glow { position: absolute; inset: -30px; background: radial-gradient(closest-side at 55% 45%, rgba(46,91,255,.15), transparent); }
 .fx-dots {

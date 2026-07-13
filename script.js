@@ -246,48 +246,48 @@
   drive(document.querySelector(".work-track"), 38, 2); // projects
 })();
 
-/* ---------- hero deck: rotating project screens ---------- */
-// Cycles the stacked cards: the front one lifts away, the rest promote, and the
-// outgoing card rejoins the back of the stack. Pauses on hover and offscreen;
-// never starts under prefers-reduced-motion (the stack just sits still).
+/* ---------- hero reel: Ken-Burns showreel over project screens ---------- */
+// A framed "showreel": each shot's img runs a slow zoom/pan (pure CSS, see the
+// m-* classes); this module runs the cut list — dissolve to the next shot and
+// update the lower-third tag + progress dots. Pauses on hover and offscreen;
+// never starts under prefers-reduced-motion (the first frame just sits still).
 (() => {
   const art = document.querySelector(".hero-art");
-  const deck = document.querySelector(".deck");
-  if (!art || !deck) return;
-  const CLS = ["d-front", "d-mid", "d-back"];
-  const order = Array.from(deck.querySelectorAll(".deck-card"));
-  if (order.length < 2) return;
-  const place = (c, i) => {
-    c.classList.remove("d-front", "d-mid", "d-back", "d-hidden", "d-out");
-    c.classList.add(i < CLS.length ? CLS[i] : "d-hidden");
+  const reel = document.querySelector(".hreel");
+  if (!art || !reel) return;
+  const shots = Array.from(reel.querySelectorAll(".hreel-shot"));
+  const tag = reel.querySelector(".hreel-tag");
+  const dots = Array.from(reel.querySelectorAll(".hreel-dots i"));
+  if (shots.length < 2) return;
+  let i = 0;
+
+  const cut = (n) => {
+    const cur = shots[i], next = shots[n];
+    cur.classList.add("out");          // outgoing dissolves above…
+    next.classList.add("on");          // …the incoming, already moving
+    setTimeout(() => cur.classList.remove("on", "out"), 1050);
+    if (tag) {
+      tag.textContent = next.dataset.name || "";
+      tag.classList.remove("bump"); void tag.offsetWidth; tag.classList.add("bump");
+    }
+    dots.forEach((d, k) => d.classList.toggle("on", k === n));
+    i = n;
   };
-  order.forEach(place);
+
+  shots[0].classList.add("on");
+  if (tag) tag.textContent = shots[0].dataset.name || "";
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-  const advance = () => {
-    const front = order.shift();
-    order.push(front);
-    order.forEach((c, i) => { if (c !== front) place(c, i); });
-    front.classList.remove("d-front");
-    front.classList.add("d-out");
-    // once the fly-out finishes, snap (transition-suppressed) to the stack's tail
-    setTimeout(() => {
-      front.classList.add("no-t");
-      place(front, order.indexOf(front));
-      void front.offsetWidth; // flush styles so the next promotion animates
-      front.classList.remove("no-t");
-    }, 800);
-  };
-
-  let timer = setInterval(advance, 4200);
+  const SHOT_MS = 5600;
+  let timer = setInterval(() => cut((i + 1) % shots.length), SHOT_MS);
   const stop = () => { if (timer) { clearInterval(timer); timer = null; } };
-  const start = () => { if (!timer) timer = setInterval(advance, 4200); };
+  const start = () => { if (!timer) timer = setInterval(() => cut((i + 1) % shots.length), SHOT_MS); };
   art.addEventListener("mouseenter", stop);
   art.addEventListener("mouseleave", start);
   // don't churn while the hero is scrolled away
   if ("IntersectionObserver" in window) {
     new IntersectionObserver((es) => {
       if (es[es.length - 1].isIntersecting) start(); else stop();
-    }).observe(deck);
+    }).observe(reel);
   }
 })();
