@@ -204,21 +204,38 @@
     let paused = false, resumeAt = 0, rampStart = 0, last = null, visible = true;
     let loopW = el.scrollWidth / periods;      // width of one repeated set
     let speed = loopW / durationSec;           // px per second
+    // Position lives in a float accumulator, NOT in el.scrollLeft: mobile Safari
+    // stores scrollLeft as an integer, so per-frame increments under 1px
+    // (scrollLeft += 0.4) truncate back to the old value and the carousel never
+    // moves. We advance `pos` and assign it; sub-pixel progress survives here.
+    let pos = el.scrollLeft;
     const recalc = () => { loopW = el.scrollWidth / periods; speed = loopW / durationSec; };
     window.addEventListener("resize", recalc, { passive: true });
     window.addEventListener("load", recalc);
 
     const wrap = () => {
-      if (el.scrollLeft >= loopW) el.scrollLeft -= loopW;
-      else if (el.scrollLeft < 0) el.scrollLeft += loopW;
+      if (pos >= loopW) pos -= loopW;
+      else if (pos < 0) pos += loopW;
     };
     // touch events are reliable on touch devices (pointer events get canceled once
     // native scrolling takes over): finger down pauses, lift schedules the resume.
     el.addEventListener("touchstart", () => { paused = true; resumeAt = Infinity; }, { passive: true });
-    const resumeSoon = () => { resumeAt = performance.now() + 1500; };
+    const resumeSoon = () => { if (resumeAt !== 0) resumeAt = performance.now() + 1500; };
     el.addEventListener("touchend", resumeSoon, { passive: true });
     el.addEventListener("touchcancel", resumeSoon, { passive: true });
-    el.addEventListener("scroll", wrap, { passive: true }); // keep manual scroll seamless
+
+    // Scrolls we didn't write (finger drags, momentum after release) become the
+    // new position, so the auto-advance resumes exactly where the user left off.
+    // Momentum also keeps pushing the resume deadline back — motion restarts
+    // ~1.5s after the carousel actually comes to rest, not after the finger lifts.
+    el.addEventListener("scroll", () => {
+      const sl = el.scrollLeft;
+      if (Math.abs(sl - pos) > 1.5) {
+        pos = sl;
+        if (paused && resumeAt !== Infinity) resumeAt = performance.now() + 1500;
+      }
+      if (pos >= loopW || pos < 0) { wrap(); el.scrollLeft = pos; } // seamless manual loop
+    }, { passive: true });
 
     // don't spend cycles auto-advancing while the carousel is offscreen
     if ("IntersectionObserver" in window) {
@@ -234,8 +251,9 @@
       if (paused && performance.now() >= resumeAt) { paused = false; rampStart = performance.now(); }
       if (visible && !paused) {
         const ramp = Math.min(1, (performance.now() - rampStart) / 900); // ease speed back in
-        el.scrollLeft += speed * ramp * dt;
+        pos += speed * ramp * dt;
         wrap();
+        el.scrollLeft = pos;
       }
       requestAnimationFrame(frame);
     });
