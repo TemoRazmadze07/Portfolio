@@ -264,6 +264,32 @@
   drive(document.querySelector(".work-track"), 38, 2); // projects
 })();
 
+// Mobile nav: the hamburger toggles the dropdown menu (≤760px). It closes when
+// a link is tapped, on Escape, on an outside click, or when the viewport grows
+// back to the desktop layout.
+(function () {
+  const nav = document.querySelector(".nav");
+  const toggle = document.querySelector(".nav-toggle");
+  const links = document.querySelector(".nav-links");
+  if (!nav || !toggle || !links) return;
+
+  const setOpen = (open) => {
+    nav.classList.toggle("nav-open", open);
+    toggle.setAttribute("aria-expanded", open ? "true" : "false");
+    toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+  };
+
+  toggle.addEventListener("click", () => setOpen(!nav.classList.contains("nav-open")));
+  links.addEventListener("click", (e) => { if (e.target.closest("a")) setOpen(false); });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && nav.classList.contains("nav-open")) { setOpen(false); toggle.focus(); }
+  });
+  document.addEventListener("click", (e) => {
+    if (nav.classList.contains("nav-open") && !nav.contains(e.target)) setOpen(false);
+  });
+  window.addEventListener("resize", () => { if (window.innerWidth > 760) setOpen(false); }, { passive: true });
+})();
+
 /* ---------- hero reel: Ken-Burns showreel over project screens ---------- */
 // A framed "showreel": each shot's img runs a slow zoom/pan (pure CSS, see the
 // m-* classes); this module runs the cut list — dissolve to the next shot and
@@ -307,5 +333,145 @@
     new IntersectionObserver((es) => {
       if (es[es.length - 1].isIntersecting) start(); else stop();
     }).observe(reel);
+  }
+})();
+
+/* ---------- hero v2: curtain cleanup + cursor-weight intro ---------- */
+// The intro line is split into chars; each char's variable-font weight rises
+// as the cursor approaches (Plus Jakarta Sans is loaded as a variable font).
+// Screen readers get the sentence via aria-label on the h1.
+(() => {
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const curtain = document.querySelector(".curtain");
+  if (curtain) {
+    if (reduced) curtain.remove(); // CSS hides it; drop the node too
+    else curtain.addEventListener("animationend", () => curtain.remove());
+  }
+
+  const intro = document.querySelector(".hero2-intro");
+  if (!intro) return;
+
+  const text = intro.textContent.trim().replace(/\s+/g, " ");
+  intro.setAttribute("aria-label", text);
+
+  // split into word spans (keep wrapping word-level) holding char spans
+  const chars = [];
+  const frag = document.createDocumentFragment();
+  text.split(" ").forEach((word, i) => {
+    if (i) frag.appendChild(document.createTextNode(" "));
+    const w = document.createElement("span");
+    w.className = "w2";
+    w.setAttribute("aria-hidden", "true");
+    for (const ch of word) {
+      const c = document.createElement("span");
+      c.textContent = ch;
+      w.appendChild(c);
+      chars.push(c);
+    }
+    frag.appendChild(w);
+  });
+  intro.textContent = "";
+  intro.appendChild(frag);
+
+  if (reduced || !window.matchMedia("(pointer: fine)").matches) return;
+
+  const BASE = 500, MAX = 800, SIGMA = 58, CUTOFF = 240;
+  const n = chars.length;
+  const cur = new Float32Array(n).fill(BASE);
+  const shown = new Int16Array(n).fill(BASE);
+  let cx = new Float32Array(n), cy = new Float32Array(n); // char centers, page coords
+  let mx = -1e4, my = -1e4, raf = null;
+
+  const measure = () => {
+    chars.forEach((c, i) => {
+      const r = c.getBoundingClientRect();
+      cx[i] = r.left + r.width / 2 + window.scrollX;
+      cy[i] = r.top + r.height / 2 + window.scrollY;
+    });
+  };
+  // measure once entrance animation + fonts settle; keep fresh on resize
+  const settle = () => setTimeout(measure, 1600);
+  (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(settle);
+  window.addEventListener("resize", () => setTimeout(measure, 120), { passive: true });
+
+  const loop = () => {
+    raf = requestAnimationFrame(loop);
+    let busy = false;
+    for (let i = 0; i < n; i++) {
+      const dx = cx[i] - mx, dy = cy[i] - my;
+      const d = Math.sqrt(dx * dx + dy * dy);
+      const target = d > CUTOFF ? BASE : BASE + (MAX - BASE) * Math.exp(-(d * d) / (2 * SIGMA * SIGMA));
+      cur[i] += (target - cur[i]) * 0.16;
+      if (Math.abs(target - cur[i]) > 0.4) busy = true;
+      const rounded = Math.round(cur[i]);
+      if (rounded !== shown[i]) {
+        shown[i] = rounded;
+        chars[i].style.fontVariationSettings = '"wght" ' + rounded;
+      }
+    }
+    if (!busy) { cancelAnimationFrame(raf); raf = null; }
+  };
+  window.addEventListener("mousemove", (e) => {
+    mx = e.clientX + window.scrollX;
+    my = e.clientY + window.scrollY;
+    if (!raf) loop();
+  }, { passive: true });
+})();
+
+/* ---------- hero v2: project cards drifting along an arc ---------- */
+// matmac-style strip: each card rides a CSS offset-path arc; a rAF loop
+// advances a shared offset so the whole set drifts, fading at both ends.
+// offset-rotate:auto (the default) tilts cards to follow the curve.
+(() => {
+  const arc = document.querySelector(".hero2-arc");
+  if (!arc) return;
+  if (!CSS.supports("offset-distance", "0%")) { arc.remove(); return; } // no pile-ups on old engines
+
+  const cards = Array.from(arc.querySelectorAll(".hero2-card"));
+  const n = cards.length;
+  if (!n) return;
+
+  const PATH = 'path("M 1 127 C 1 127 359 1 865 1 C 1371 1 1729 127 1729 127")';
+  cards.forEach((c) => { c.style.offsetPath = PATH; });
+
+  const SPACING = 10;                 // % of path between cards
+  const CYCLE = n * SPACING;          // full loop length (>100 so cards wrap offstage)
+  const BUF = (CYCLE - 100) / 2;      // offstage margin at each end
+  const FADE = 9;                     // % of path over which cards fade in/out
+  const CRUISE = 1.1, HOVER = 0.25;   // %/s — brisk drift, eases off while inspecting a card
+
+  let base = 0, speed = CRUISE, targetSpeed = CRUISE;
+  arc.addEventListener("pointerover", (e) => { if (e.target.closest(".hero2-card")) targetSpeed = HOVER; });
+  arc.addEventListener("pointerout", (e) => { if (e.target.closest(".hero2-card")) targetSpeed = CRUISE; });
+  const place = () => {
+    for (let i = 0; i < n; i++) {
+      const pos = ((base + i * SPACING) % CYCLE) - BUF;
+      const card = cards[i];
+      if (pos < 0 || pos > 100) { card.style.opacity = "0"; continue; }
+      card.style.offsetDistance = pos.toFixed(3) + "%";
+      card.style.opacity = Math.min(pos / FADE, (100 - pos) / FADE, 1).toFixed(3);
+    }
+  };
+  place();
+
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return; // static arc
+
+  let last = null, raf = null;
+  const tick = (now) => {
+    raf = requestAnimationFrame(tick);
+    speed += (targetSpeed - speed) * 0.06; // glide between cruise and hover pace
+    if (last !== null) base = (base + speed * ((now - last) / 1000)) % CYCLE;
+    last = now;
+    place();
+  };
+  const start = () => { if (!raf) { last = null; raf = requestAnimationFrame(tick); } };
+  const stop = () => { if (raf) { cancelAnimationFrame(raf); raf = null; } };
+  start();
+  // don't churn while the hero is scrolled away
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver((es) => {
+      if (es[es.length - 1].isIntersecting) start(); else stop();
+    }).observe(arc);
   }
 })();

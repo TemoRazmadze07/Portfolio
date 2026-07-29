@@ -56,9 +56,16 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
 .nav-links { display: flex; align-items: center; gap: 28px; }
 .nav-links a { color: var(--ink); text-decoration: none; font-weight: 600; font-size: 15px; }
 .nav-links a:hover { color: var(--accent); }
-.nav-links a:not(.btn) { position: relative; display: inline-flex; align-items: center; gap: 7px; }
-.nav-ico { width: 16px; height: 16px; opacity: .55; transition: opacity .2s ease; }
-.nav-links a:hover .nav-ico, .nav-links a.active .nav-ico { opacity: 1; }
+.nav-links a:not(.btn) { position: relative; display: inline-flex; align-items: center; }
+/* hamburger toggle — hidden on desktop, shown ≤760px */
+.nav-toggle { display: none; width: 40px; height: 40px; margin-right: -8px; padding: 0; border: 0; background: transparent; color: var(--ink); cursor: pointer; align-items: center; justify-content: center; }
+.nav-burger, .nav-burger::before, .nav-burger::after { content: ""; display: block; width: 22px; height: 2px; border-radius: 2px; background: currentColor; transition: transform .25s ease, opacity .2s ease; }
+.nav-burger { position: relative; }
+.nav-burger::before { position: absolute; left: 0; top: -6.5px; }
+.nav-burger::after { position: absolute; left: 0; top: 6.5px; }
+.nav-toggle[aria-expanded="true"] .nav-burger { background: transparent; }
+.nav-toggle[aria-expanded="true"] .nav-burger::before { transform: translateY(6.5px) rotate(45deg); }
+.nav-toggle[aria-expanded="true"] .nav-burger::after { transform: translateY(-6.5px) rotate(-45deg); }
 /* scrollspy: script.js marks the section currently in view */
 .nav-links a:not(.btn)::after {
   content: ""; position: absolute; left: 0; right: 0; bottom: -8px; height: 2px;
@@ -67,16 +74,30 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
 }
 .nav-links a.active { color: var(--accent); }
 .nav-links a.active::after { transform: scaleX(1); }
-/* small screens: the five links can't fit — collapse to icon-only wayfinding */
+/* the "Download CV" → "CV" swap is unused now (full label shows in the menu) */
 .cv-short { display: none; }
+/* ≤760px: links collapse behind the hamburger into a dropdown panel */
 @media (max-width: 760px) {
-  .nav-links { gap: 14px; }
-  .nav-links a:not(.btn) .nav-label { display: none; }
-  .nav-ico { width: 20px; height: 20px; }
-  .nav-links .btn-small { padding: 8px 14px; font-size: 13px; }
+  .nav-toggle { display: inline-flex; }
   .nav-name { font-size: 15.5px; }
-  .cv-long { display: none; }
-  .cv-short { display: inline; }
+  .nav-links {
+    position: absolute; top: 100%; left: 0; right: 0; z-index: 60;
+    flex-direction: column; align-items: stretch; gap: 2px;
+    padding: 8px 24px 16px;
+    background: color-mix(in srgb, var(--bg) 97%, transparent);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--line);
+    box-shadow: 0 26px 40px -26px rgba(14,27,44,.4);
+    transform: translateY(-10px); opacity: 0; visibility: hidden; pointer-events: none;
+    transition: opacity .2s ease, transform .2s ease, visibility 0s linear .2s;
+  }
+  .nav.nav-open .nav-links {
+    transform: none; opacity: 1; visibility: visible; pointer-events: auto;
+    transition: opacity .2s ease, transform .2s ease, visibility 0s;
+  }
+  .nav-links a:not(.btn) { padding: 13px 6px; font-size: 16px; border-bottom: 1px solid color-mix(in srgb, var(--line) 55%, transparent); }
+  .nav-links a:not(.btn)::after { display: none; }
+  .nav-links .btn-small { margin-top: 12px; padding: 12px 16px; font-size: 14px; justify-content: center; text-align: center; }
 }
 
 /* ---------- buttons ---------- */
@@ -94,6 +115,14 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
 .btn-ghost { background: transparent; color: var(--ink) !important; border: 1.5px solid var(--ink); box-shadow: none; }
 .btn-ghost:hover { background: var(--ink); color: #fff !important; }
 .btn-small { padding: 10px 20px; font-size: 14px; }
+
+/* phones: primary CTAs fill the container and stack — bigger, easier tap targets
+   (covers hero, contact, case-page CTAs via .hero-cta, and the reel video button) */
+@media (max-width: 560px) {
+  .hero-cta, .reel-cta { flex-direction: column; align-items: stretch; gap: 12px; }
+  .hero-cta .btn, .reel-cta .btn { width: 100%; justify-content: center; }
+  .reel-cta .reel-note { text-align: center; }
+}
 
 /* ---------- hero ---------- */
 .hero { padding: 96px 0 72px; }
@@ -565,6 +594,16 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
 .m-fig { position: relative; border-radius: 18px; overflow: hidden; box-shadow: 0 18px 44px -20px rgba(14,27,44,.26); margin: 0; }
 .m-fig img { display: block; width: 100%; height: 310px; object-fit: cover; transform: scale(1.06); transition: transform .9s cubic-bezier(.2,.65,.25,1); }
 .moment.in .m-fig img { transform: scale(1); }
+
+/* full-bleed moment: a dense research/diagnosis figure shown at natural ratio,
+   full content width, with a caption below (used for TBC's tree-testing artifact) */
+.moment-wide { display: block; margin: 40px 0; }
+.moment-wide .m-txt { max-width: 68ch; margin-bottom: 22px; }
+.m-fig--wide { position: static; overflow: visible; border-radius: 0; box-shadow: none; }
+.m-fig--wide img { height: auto; object-fit: contain; transform: none; border-radius: var(--r-md); box-shadow: 0 22px 50px -22px rgba(14,27,44,.32); }
+.moment-wide.in .m-fig--wide img { transform: none; }
+.m-fig--wide figcaption { position: static; margin: 14px 2px 0; max-width: 70ch; font-size: 13.5px; font-style: italic; color: var(--mute); background: none; }
+@media (max-width: 880px) { .moment-wide { margin: 28px 0; } }
 .m-txt h3 { font-size: 21px; margin-bottom: 10px; letter-spacing: -.015em; }
 .m-txt p { font-size: 16px; line-height: 1.65; }
 
@@ -801,3 +840,205 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
 
 .o-dashc { transform-origin: 200px 200px; transform-box: view-box; animation: orb-spin 24s linear infinite reverse; }
 .o-outer { transform-origin: 200px 200px; transform-box: view-box; animation: orb-spin 70s linear infinite; }
+
+/* ============================================================
+   HERO V2 — matmac-style try: intro curtain, giant discipline
+   marquee, retro Mac + rotating "open to work" badge, and a
+   cursor-weight intro line (script.js: hero v2 module).
+   v1 hero styles above are untouched (revert = git).
+   ============================================================ */
+
+/* --- intro curtain: accent sweep that lifts on load --- */
+.curtain {
+  position: fixed; inset: 0; z-index: 300;
+  background: var(--accent);
+  animation: h2curtain .7s cubic-bezier(.77,0,.18,1) .25s forwards;
+}
+@keyframes h2curtain { to { transform: translateY(-101%); } }
+
+.hero2 {
+  position: relative;
+  min-height: calc(100svh - 77px);
+  display: flex; align-items: flex-start; justify-content: center;
+  overflow: hidden;
+}
+
+/* --- giant background marquee --- */
+.hero2-marquee {
+  /* band center = mac visual center: nav 77 + stage (15vh-60) + 291/2, minus hero top */
+  position: absolute; left: 0; right: 0; top: calc(15vh + 86px);
+  transform: translateY(-50%);
+  z-index: 1; overflow: hidden; pointer-events: none;
+  opacity: 0; animation: h2fade .9s ease 1.15s forwards;
+}
+.hero2-marquee::before, .hero2-marquee::after {
+  content: ""; position: absolute; top: 0; bottom: 0; width: min(230px, 20vw); z-index: 2;
+}
+.hero2-marquee::before { left: 0; background: linear-gradient(to right, var(--bg), transparent); }
+.hero2-marquee::after { right: 0; background: linear-gradient(to left, var(--bg), transparent); }
+.hero2-mq-track { display: flex; width: max-content; animation: h2scroll 150s linear infinite; }
+.hero2-mq-track ul { display: flex; list-style: none; margin: 0; padding: 0; }
+.hero2-mq-track li {
+  white-space: nowrap; padding-left: .38em;
+  /* 1.35: room for descenders (y, g) — at 1.15 they clip on overflow:hidden */
+  font-size: clamp(64px, 12.5vw, 136px); font-weight: 500; line-height: 1.35;
+  letter-spacing: -0.045em;
+  color: color-mix(in srgb, var(--ink) 5.5%, transparent);
+}
+@keyframes h2scroll { to { transform: translateX(-50%); } }
+
+/* --- center stage --- */
+.hero2-stage {
+  position: relative; z-index: 2;
+  display: flex; flex-direction: column; align-items: center;
+  /* mac top lands at ~17% of the viewport, like the reference (171/900) */
+  padding: 0 24px; margin-top: calc(15vh - 60px);
+}
+
+/* --- the Mac --- */
+.hero2-mac {
+  position: relative; width: 210px; /* full mac.svg art is 706:978 — taller than the crop */
+  opacity: 0;
+  animation: h2mac .8s cubic-bezier(.2,.7,.2,1) .45s forwards;
+}
+@keyframes h2mac {
+  from { opacity: 0; transform: translateY(16px) scale(calc(var(--macScale, 1) * .96)); }
+  to   { opacity: 1; transform: translateY(0)    scale(var(--macScale, 1)); }
+}
+.hero2-macsvg { display: block; width: 100%; height: auto; }
+/* soft ground shadow (the old inline-svg ellipse died with the hand-drawn mac) */
+.hero2-mac::after {
+  content: ""; position: absolute; z-index: -1;
+  left: 12%; right: 12%; bottom: -8px; height: 20px;
+  background: radial-gradient(50% 50% at 50% 50%, rgba(14, 27, 44, .18), transparent 72%);
+  filter: blur(5px);
+}
+.hero2-hello {
+  position: absolute; left: 50%; top: 30.9%; /* CRT center of the full mac.svg art */
+  width: 96px; height: auto; overflow: visible;
+  transform: translate(-50%, -50%) rotate(-3deg);
+}
+.hero2-hello .hh-text {
+  font-family: "Dancing Script", cursive; font-weight: 700; font-size: 46px;
+  fill: #2f3a4d;
+}
+/* the white mask stroke traces the pen route; as it draws, the text beneath
+   is revealed — handwriting animation in the real font */
+.hero2-hello .hh-mask {
+  fill: none; stroke: #fff; stroke-width: 10;
+  stroke-linecap: round; stroke-linejoin: round;
+  stroke-dasharray: 1; stroke-dashoffset: 1; /* pathLength="1" on the path */
+  animation: h2draw 1.6s cubic-bezier(.4, .05, .55, .95) 1.15s forwards;
+}
+@keyframes h2draw { to { stroke-dashoffset: 0; } }
+.hero2-hello .hh-dot { opacity: 0; animation: h2fade .15s ease-out 2.85s forwards; }
+
+/* --- rotating badge + pulsing dot --- */
+.hero2-badge {
+  /* dot (badge center) sits right on the mac's top-right corner, like the reference */
+  position: absolute; top: -77px; right: -77px;
+  width: 158px; height: 158px; z-index: 3;
+  opacity: 0; animation: h2pop .6s cubic-bezier(.2,.7,.3,1.4) .95s forwards;
+}
+@keyframes h2pop { from { opacity: 0; transform: scale(.7); } to { opacity: 1; transform: scale(1); } }
+.hero2-ring { position: absolute; inset: 0; width: 100%; height: 100%; animation: h2spin 18s linear infinite; }
+.hero2-ring text {
+  font-family: var(--font); font-size: 12.5px; font-weight: 700;
+  letter-spacing: 1.8px; fill: var(--mute);
+}
+@keyframes h2spin { to { transform: rotate(360deg); } }
+.hero2-dot { position: absolute; inset: 0; margin: auto; width: 16px; height: 16px; }
+.hero2-dot::before {
+  content: ""; position: absolute; inset: 0; border-radius: 50%;
+  background: #38bdf8; opacity: .75;
+  animation: h2ping 1.8s cubic-bezier(0, 0, .2, 1) infinite;
+}
+.hero2-dot::after {
+  content: ""; position: absolute; inset: 0; border-radius: 50%;
+  background: linear-gradient(135deg, #4ade80, #16a34a);
+  border: 1px solid #22c55e;
+  box-shadow: 0 2px 6px rgba(22, 163, 74, .35);
+}
+@keyframes h2ping { 0% { transform: scale(1); opacity: .75; } 75%, 100% { transform: scale(2.4); opacity: 0; } }
+
+/* --- intro line (chars get weight from cursor proximity — script.js) --- */
+.hero2-intro {
+  /* mac.svg is full-bleed (no padding below the body) — real gap needed */
+  margin-top: 18px; max-width: 620px;
+  text-align: center; text-wrap: balance;
+  font-size: clamp(22px, 3.2vw, 30px); line-height: 1.26;
+  letter-spacing: -0.02em; font-weight: 500;
+  color: color-mix(in srgb, var(--ink) 82%, var(--body));
+  opacity: 0; animation: h2up .7s ease .7s forwards;
+}
+.hero2-intro .w2 { display: inline-block; white-space: nowrap; }
+@keyframes h2up { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes h2fade { to { opacity: 1; } }
+
+@media (max-width: 760px) {
+  .hero2 { min-height: calc(100svh - 58px); }
+  /* height-aware: pins the intro→cards gap to ~70px on any phone height
+     (stage flow is ~430px tall; cards top sits ~144px above hero bottom) */
+  .hero2-stage { margin-top: clamp(16px, 100svh - 700px, 180px); }
+  /* wider mac on mobile; --macScale (transform) shrinks mac+hello+badge together */
+  .hero2-mac { --macScale: .8; width: 240px; }
+  .hero2-intro { font-size: 21px; margin-top: 12px; max-width: 430px; }
+  /* tracks the stage offset above + half of the mac box (240w art = 332h) */
+  .hero2-marquee { top: calc(clamp(16px, 100svh - 700px, 180px) + 166px); }
+}
+/* short phones (SE etc.): smaller mac buys back flow height for the card gap */
+@media (max-width: 760px) and (max-height: 719px) {
+  .hero2-mac { width: 210px; }
+  .hero2-marquee { top: calc(clamp(16px, 100svh - 700px, 180px) + 146px); } /* 210w art = 291h */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .curtain { display: none; }
+  .hero2-marquee, .hero2-mac, .hero2-badge, .hero2-intro { opacity: 1; animation: none; }
+  .hero2-mac { transform: scale(var(--macScale, 1)); }
+  .hero2-hello .hh-mask { animation: none; stroke-dashoffset: 0; }
+  .hero2-hello .hh-dot { animation: none; opacity: 1; }
+  .hero2-mq-track, .hero2-ring { animation: none; }
+  .hero2-dot::before { animation: none; opacity: 0; }
+}
+
+/* --- hero v2: project cards drifting along an arc --- */
+.hero2-arc {
+  /* 69vh — same anchor as the reference; hero starts 66px down (nav) */
+  position: absolute; left: 50%; top: calc(69vh - 77px); z-index: 3;
+  width: 1730px; height: 130px;
+  transform: translateX(-50%);
+  pointer-events: none;
+  opacity: 0; animation: h2fade .9s ease 1.35s forwards;
+}
+.hero2-arc-track { position: relative; width: 100%; height: 100%; }
+.hero2-card {
+  position: absolute; top: 0; left: 0;
+  width: 140px; height: 110px;
+  pointer-events: auto;
+  border-radius: 14px; overflow: hidden;
+  background: var(--surface);
+  box-shadow: 0 25px 50px -12px rgba(14, 27, 44, .28);
+  transition: transform .3s ease;
+  opacity: 0; /* script.js drives per-card offset-distance + opacity */
+}
+.hero2-card:hover { transform: scale(1.35); z-index: 50; }
+.hero2-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+@media (max-width: 760px) {
+  .hero2-arc { transform: translateX(-50%) scale(.75); transform-origin: 50% 100%; top: auto; bottom: 6px; }
+}
+/* short desktop/laptop viewports: compress the composition so mac, intro
+   and the card arc all clear one screen (no scroll needed to see the arc) */
+@media (min-width: 761px) and (max-height: 849px) {
+  .hero2-stage { margin-top: 20px; }
+  .hero2-mac { --macScale: .9; transform-origin: 50% 100%; }
+  .hero2-marquee { top: 180px; } /* visual mac center with .9 scale, bottom origin */
+  .hero2-arc { top: calc(100% - 190px); }
+}
+@media (max-height: 599px) {
+  .hero2-arc { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero2-arc { opacity: 1; animation: none; }
+}
