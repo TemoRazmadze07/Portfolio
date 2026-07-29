@@ -475,3 +475,24 @@
     }).observe(arc);
   }
 })();
+
+/* ---------- mobile nav: hide on scroll down, reveal on scroll up ---------- */
+(() => {
+  const nav = document.querySelector(".nav");
+  if (!nav) return;
+  const mq = window.matchMedia("(max-width: 760px)");
+  const SHOW_AT = 90; // always visible this close to the top
+  const THRESH = 8;   // ignore micro-jitter between direction flips
+  let lastY = Math.max(0, window.scrollY), raf = null;
+  const update = () => {
+    raf = null;
+    const y = Math.max(0, window.scrollY);
+    if (!mq.matches || nav.classList.contains("nav-open")) { nav.classList.remove("nav-hide"); lastY = y; return; }
+    if (y < SHOW_AT) { nav.classList.remove("nav-hide"); lastY = y; return; }
+    if (y > lastY + THRESH) { nav.classList.add("nav-hide"); lastY = y; }
+    else if (y < lastY - THRESH) { nav.classList.remove("nav-hide"); lastY = y; }
+    // inside the jitter window: keep lastY so small deltas accumulate
+  };
+  window.addEventListener("scroll", () => { if (!raf) raf = requestAnimationFrame(update); }, { passive: true });
+  if (mq.addEventListener) mq.addEventListener("change", () => { if (!mq.matches) nav.classList.remove("nav-hide"); });
+})();

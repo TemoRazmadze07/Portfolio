@@ -1104,3 +1104,12 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
 @media (prefers-reduced-motion: reduce) {
   .case2-next-track { animation: none; }
 }
+
+/* --- mobile nav: slides away on scroll down, returns on scroll up (script.js) --- */
+@media (max-width: 760px) {
+  .nav { transition: transform .32s cubic-bezier(.32, .72, .35, 1); }
+  .nav.nav-hide { transform: translateY(-103%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav { transition: none; }
+}
