@@ -1042,3 +1042,65 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
 @media (prefers-reduced-motion: reduce) {
   .hero2-arc { opacity: 1; animation: none; }
 }
+
+/* --- case v2 (band rhythm — pilot on golance.html) ---
+   Rules: one centered text column; alternating statement/image bands;
+   images on tinted panels at natural aspect (never cropped);
+   giant Next Project marquee as pagination. */
+.c2col { max-width: 760px; margin: 0 auto; padding: 0 24px; }
+.case2-hero { padding: 92px 0 8px; }
+.case2-hero h1 {
+  font-size: clamp(31px, 4.4vw, 52px); line-height: 1.16;
+  letter-spacing: -0.028em; font-weight: 700; color: var(--ink);
+  text-wrap: balance; margin-top: 18px;
+}
+.case2-chips { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 30px; }
+.case2-chip {
+  border: 1px solid var(--line); border-radius: 999px;
+  padding: 8px 17px; font-size: 14.5px; font-weight: 600; color: var(--body);
+  background: transparent; white-space: nowrap;
+}
+.case2-chip--year { margin-left: auto; }
+.case2-band { padding-top: 68px; }
+.case2-statement {
+  font-size: clamp(21px, 2.5vw, 27px); line-height: 1.48;
+  font-weight: 600; letter-spacing: -0.015em;
+  color: color-mix(in srgb, var(--ink) 88%, var(--body));
+}
+.case2-statement .accent { color: var(--accent); }
+.case2-sub { margin-top: 14px; font-size: 17px; line-height: 1.68; color: var(--body); }
+.case2-imgband {
+  width: min(94vw, 1400px); margin: 46px auto 0;
+  border-radius: 24px; padding: clamp(22px, 4.5vw, 60px);
+  display: flex; justify-content: center;
+}
+.case2-imgband img {
+  width: 100%; max-width: 1060px; height: auto; display: block;
+  border-radius: 14px; box-shadow: 0 24px 48px -20px rgba(14, 27, 44, .22);
+}
+.case2-next {
+  display: block; overflow: hidden; margin-top: 96px; padding: 30px 0 38px;
+  text-decoration: none; border-top: 1px solid var(--line);
+}
+.case2-next-track { display: flex; width: max-content; animation: h2scroll 34s linear infinite; }
+.case2-next-track ul { display: flex; list-style: none; margin: 0; padding: 0; }
+.case2-next-track li {
+  white-space: nowrap; padding-left: .45em;
+  font-size: clamp(54px, 8.5vw, 104px); font-weight: 600; line-height: 1.25;
+  letter-spacing: -0.03em;
+  color: color-mix(in srgb, var(--ink) 12%, transparent);
+  transition: color .35s ease;
+}
+.case2-next:hover .case2-next-track li { color: color-mix(in srgb, var(--accent) 55%, transparent); }
+.case2-next:hover .case2-next-track { animation-play-state: paused; }
+@media (max-width: 760px) {
+  .case2-hero { padding-top: 60px; }
+  .case2-chips { gap: 8px; }
+  .case2-chip { font-size: 13px; padding: 7px 13px; }
+  .case2-chip--year { margin-left: 0; }
+  .case2-band { padding-top: 52px; }
+  .case2-imgband { width: calc(100% - 24px); border-radius: 18px; margin-top: 34px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .case2-next-track { animation: none; }
+}

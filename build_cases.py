@@ -9,7 +9,7 @@ out of the shared template and this script no longer writes it. TBC stays in the
 CASES list only so the "next case study" loop still links correctly to/from it
 (rogers → tbc → golance). Edit tbc.html directly; edit the other three here.
 """
-V = "41"  # cache-bust version, keep in sync with index.html
+V = "42"  # cache-bust version, keep in sync with index.html
 
 CASES = [
  dict(
@@ -35,7 +35,7 @@ CASES = [
   reflection="With more time I'd have instrumented navigation analytics from day one — tree testing found the breakages, but continuous funnel data would have caught them sooner.",
  ),
  dict(
-  slug="golance", tint="tint-green", ph="ph-golance",
+  slug="golance", standalone=True, tint="tint-green", ph="ph-golance",
   kicker="goLance · AI marketplace",
   title="Matching trust — designing the UX for goLance's AI cultural-fit engine",
   meta=[("Role","Senior User Experience Designer"),

@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- CASE V2 PILOT (band rhythm) — hand-maintained; build_cases.py skips golance (standalone=True).
+     If the pilot is approved, port this template into build_cases.py for novocure/rogers. -->
 <title>Matching trust — designing the UX for goLance's AI cultural-fit engine — Temuri Razmadze</title>
 <meta name="description" content="Case study: goLance · AI marketplace. +25% project engagement · −22% checkout drop-off · −40% support load">
 <link rel="canonical" href="https://temorazmadze07.github.io/Portfolio/golance.html">
@@ -25,7 +27,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=41">
+<link rel="stylesheet" href="styles.css?v=42">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="assets/favicon-16.png" sizes="16x16" type="image/png">
@@ -50,50 +52,58 @@
 </header>
 
 <main>
-  <section class="case-hero">
-    <div class="wrap">
+  <section class="case2-hero">
+    <div class="c2col">
       <a class="case-back reveal" href="index.html#work">← All work</a>
       <p class="kicker reveal"><span class="kbar"></span>goLance · AI marketplace</p>
       <h1 class="reveal d1">Matching trust — designing the UX for goLance's AI cultural-fit engine</h1>
-      <div class="case-meta reveal d2"><div><b>Role</b><span>Senior User Experience Designer</span></div><div><b>Company</b><span>goLance — global freelance marketplace (1M+ freelancers)</span></div><div><b>When</b><span>Apr 2025 – Apr 2026 · remote (Wrocław)</span></div><div><b>Scope</b><span>End-to-end design: freelancer portal, client side, payments, AI features</span></div></div>
+      <div class="case2-chips reveal d2">
+        <span class="case2-chip">Senior UX Designer</span>
+        <span class="case2-chip">goLance — 1M+ freelancers</span>
+        <span class="case2-chip">End-to-end product + AI</span>
+        <span class="case2-chip case2-chip--year">2025 – 2026</span>
+      </div>
     </div>
   </section>
 
-  <div class="wrap">
-    <figure class="case-cover reveal"><img src="assets/ph-golance.svg" alt="" ><figcaption>placeholder — real screens coming</figcaption></figure>
-    <div class="m-band tint-green reveal"><div class="m-tile"><span class="m-num">+25%</span><span class="m-label">project engagement</span></div><div class="m-tile"><span class="m-num">−22%</span><span class="m-label">checkout drop-off</span></div><div class="m-tile"><span class="m-num">−40%</span><span class="m-label">support load</span></div></div>
+  <div class="c2col">
+    <div class="m-band tint-green reveal" style="margin-top: 44px;"><div class="m-tile"><span class="m-num">+25%</span><span class="m-label">project engagement</span></div><div class="m-tile"><span class="m-num">−22%</span><span class="m-label">checkout drop-off</span></div><div class="m-tile"><span class="m-num">−40%</span><span class="m-label">support load</span></div></div>
   </div>
 
-  <section class="case-sec">
-    <div class="wrap">
-      <p class="kicker reveal"><span class="kbar"></span>The problem</p>
-      <p class="sec-text reveal">At marketplace scale, matching on skills alone still produced mismatched, short-lived engagements — the real gap was cultural and working-style fit, which is hard to assess and easy to fake. The company was betting on AI to close it, but AI matching and automated assessment only create value if hiring users trust and act on what the model surfaces. My job was to make opaque, probabilistic outputs legible and credible inside real hiring decisions.</p>
+  <section class="case2-band">
+    <div class="c2col reveal">
+      <p class="case2-statement">At marketplace scale, matching on skills alone kept producing mismatched, short-lived engagements — the real gap was cultural and working-style fit.</p>
+      <p class="case2-sub">The company was betting on AI to close that gap. But AI matching only creates value if hiring users trust and act on what the model surfaces — my job was to make opaque, probabilistic outputs legible and credible inside real hiring decisions. I owned design end-to-end across the freelancer portal, client side, payments, and the platform's AI features; the models were built by the AI/data team.</p>
     </div>
+    <figure class="case2-imgband tint-green reveal"><img src="assets/ph-golance.svg" alt="goLance matching experience — placeholder art, real screens coming" loading="lazy"></figure>
   </section>
 
-  <section class="case-sec">
-    <div class="wrap">
-      <p class="kicker reveal"><span class="kbar"></span>My role</p>
-      <p class="sec-text reveal">End-to-end design owner across the freelancer portal, client/recruiter side, payments, and the platform's AI features — working directly with the AI/data and product teams. I designed the UX of the AI features; the models were built by the AI/data team.</p>
+  <section class="case2-band">
+    <div class="c2col reveal">
+      <p class="case2-statement">The Cultural Fit Assessment: an LLM-supported, scenario-based evaluation where adaptive questions build a real cultural profile.</p>
+      <p class="case2-sub">I designed it end-to-end — how AI-generated questions branch, and how answers resolve into an individual profile that the matching model can actually use.</p>
     </div>
+    <figure class="case2-imgband tint-blue reveal"><img src="assets/ph-golance-a.svg" alt="Cultural Fit Assessment flow — placeholder art, real screens coming" loading="lazy"></figure>
   </section>
 
-  <section class="case-sec">
-    <div class="wrap">
-      <p class="kicker reveal"><span class="kbar"></span>The work — decisions that mattered</p>
-      
-      <div class="moment reveal">
-        <figure class="m-fig"><img src="assets/ph-golance-a.svg" alt="" loading="lazy"><figcaption>placeholder — real screens coming</figcaption></figure>
-        <div class="m-txt"><h3>An assessment that builds a real profile</h3><p>I designed the Cultural Fit Assessment end-to-end — an LLM-supported, scenario-based evaluation where AI-generated adaptive questions build an individual cultural profile. I designed how questions branch and how answers resolve into a profile.</p></div>
-      </div>
-      <div class="moment flip reveal">
-        <figure class="m-fig"><img src="assets/ph-golance-b.svg" alt="" loading="lazy"><figcaption>placeholder — real screens coming</figcaption></figure>
-        <div class="m-txt"><h3>Scores as confidence, not verdicts</h3><p>Because matching is a learning model rather than static scoring, I designed compatibility scores and “Best Match” indicators to read as confidence signals — placed at the decision point in the hiring flow, informing the hire without overclaiming certainty the model couldn't back.</p></div>
-      </div>
-      <div class="moment reveal">
-        <figure class="m-fig"><img src="assets/ph-golance-a.svg" alt="" loading="lazy"><figcaption>placeholder — real screens coming</figcaption></figure>
-        <div class="m-txt"><h3>Designing for imperfect AI</h3><p>On Mango AI, the contractor-management assistant, I shaped how AI-generated summaries, performance insights, and flagged issues are presented — prioritizing what a client needs to verify, and making each flag's reasoning inspectable so people trust it enough to act.</p></div>
-      </div>
+  <section class="case2-band">
+    <div class="c2col reveal">
+      <p class="case2-statement">Compatibility scores read as <span class="accent">confidence, not verdicts</span> — placed at the decision point, informing the hire without overclaiming certainty the model couldn't back.</p>
+      <p class="case2-sub">Matching is a learning model rather than static scoring, and the interface had to say so honestly. "Best Match" indicators live inside the hiring flow, right where the decision happens.</p>
+    </div>
+    <figure class="case2-imgband tint-sand reveal"><img src="assets/ph-golance-b.svg" alt="Compatibility scoring in the hiring flow — placeholder art, real screens coming" loading="lazy"></figure>
+  </section>
+
+  <section class="case2-band">
+    <div class="c2col reveal">
+      <p class="case2-statement">Designing for imperfect AI: on Mango AI, every summary, insight and flagged issue keeps its reasoning inspectable — so people trust it enough to act.</p>
+      <p class="case2-sub">For the contractor-management assistant I prioritized what a client needs to verify before believing an automated flag, rather than presenting model output as fact.</p>
+    </div>
+    <figure class="case2-imgband tint-green reveal"><img src="assets/ph-reel-golance.svg" alt="Mango AI contractor assistant — placeholder art, real screens coming" loading="lazy"></figure>
+  </section>
+
+  <section class="case2-band">
+    <div class="c2col">
       <div class="also reveal">
         <p class="also-label">Also part of the work</p>
         <ul><li>Rebuilt payment and checkout by mapping drop-off, cutting steps, and clarifying cost and confirmation states.</li><li>Designed the core work-verification workflows — dashboards, scheduling, time tracking, in-hours session monitoring — balancing employer verification against freelancer transparency.</li><li>Drove marketplace-wide usability through IA and interface consistency; contributed to the marketing website.</li></ul>
@@ -101,27 +111,20 @@
     </div>
   </section>
 
-  <section class="case-sec">
-    <div class="wrap">
-      <p class="kicker reveal"><span class="kbar"></span>Outcome</p>
-      <p class="sec-text reveal">The Cultural Fit Assessment and matching experience raised project engagement by 25%. The checkout redesign cut drop-off by 22% and support load by 40%, and broader usability work reduced task-completion time by 30%. The harder result: hiring users had a reason to trust automated matching, and acted on model outputs they would otherwise have ignored.</p>
+  <section class="case2-band">
+    <div class="c2col reveal">
+      <p class="case2-statement">The result: <span class="accent">+25%</span> project engagement, <span class="accent">−22%</span> checkout drop-off, <span class="accent">−40%</span> support load — and hiring users acting on model outputs they used to ignore.</p>
+      <p class="case2-sub">Broader usability work cut task-completion time by 30%. Looking back, I'd push explainability further — surfacing why a match scored the way it did, not just how confident the model is.</p>
       <p class="case-skills reveal">UX research · information architecture · interaction design · AI/LLM UX · design systems · WCAG accessibility · cross-functional work with AI/data · Figma</p>
     </div>
   </section>
 
-  <section class="case-sec">
-    <div class="wrap">
-      <p class="kicker reveal"><span class="kbar"></span>Looking back</p>
-      <p class="reflection-text reveal">Next I'd push explainability further — surfacing why a match scored the way it did, not just how confident the model is.</p>
+  <a class="case2-next" href="novocure.html" aria-label="Next project: Novocure — oncology HCP portal">
+    <div class="case2-next-track" aria-hidden="true">
+      <ul><li>Next Project — Novocure ·</li><li>Next Project — Novocure ·</li><li>Next Project — Novocure ·</li></ul>
+      <ul><li>Next Project — Novocure ·</li><li>Next Project — Novocure ·</li><li>Next Project — Novocure ·</li></ul>
     </div>
-  </section>
-
-  <div class="wrap">
-    <a class="case-next tint-sand reveal" href="novocure.html">
-      <span><p class="card-kicker">Next case study</p><h2>Restarting an oncology HCP portal from zero — three markets, WCAG AA, +21% sales</h2></span>
-      <span class="case-next-arrow">→</span>
-    </a>
-  </div>
+  </a>
 
   <section class="case-cta">
     <div class="wrap">
@@ -142,6 +145,6 @@
   </div>
 </footer>
 
-<script src="script.js?v=41"></script>
+<script src="script.js?v=42"></script>
 </body>
 </html>
