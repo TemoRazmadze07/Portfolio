@@ -1,13 +1,19 @@
 #!/usr/bin/env python3
-"""Generate the four case-study pages (tbc/golance/novocure/rogers .html)
-from one data structure. Content source of truth: ../CASE_STUDIES.md.
+"""Generate the case-study pages (golance/novocure/rogers .html) from one
+data structure. Content source of truth: ../CASE_STUDIES.md.
 Regenerate: python3 build_cases.py
+
+NOTE: tbc.html is now HAND-MAINTAINED (it carries `standalone=True` below) — it
+is the first case study being built out with real screens, so it has graduated
+out of the shared template and this script no longer writes it. TBC stays in the
+CASES list only so the "next case study" loop still links correctly to/from it
+(rogers → tbc → golance). Edit tbc.html directly; edit the other three here.
 """
-V = "38"  # cache-bust version, keep in sync with index.html
+V = "40"  # cache-bust version, keep in sync with index.html
 
 CASES = [
  dict(
-  slug="tbc", tint="tint-blue", ph="ph-tbc",
+  slug="tbc", standalone=True, tint="tint-blue", ph="ph-tbc",
   kicker="TBC Bank · Banking",
   title="Business Internet Bank redesign — winner of Global Finance's “Best Online Portal” 2021",
   meta=[("Role","Senior Product Designer / Information Architect"),
@@ -139,11 +145,12 @@ HEAD = """<!DOCTYPE html>
 <header class="nav">
   <div class="nav-inner">
     <a class="nav-name" href="index.html">Temuri&nbsp;Razmadze</a>
-    <nav class="nav-links" aria-label="Main">
-      <a href="index.html#work" aria-label="Work"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span class="nav-label">Work</span></a>
-      <a href="index.html#ai" aria-label="How I work"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5 L14 9.5 L20 11.5 L14 13.5 L12 19.5 L10 13.5 L4 11.5 L10 9.5 Z"/><path d="M18.5 3.5 v4 M16.5 5.5 h4"/></svg><span class="nav-label">How I work</span></a>
-      <a href="index.html#words" aria-label="Recommendations"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-8.4 8.4 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.4 8.4 0 0 1 8.4-8.4h.5a8.48 8.48 0 0 1 8.1 8.1z"/></svg><span class="nav-label">Recommendations</span></a>
-      <a href="index.html#contact" aria-label="Contact"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/></svg><span class="nav-label">Contact</span></a>
+    <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-links"><span class="nav-burger" aria-hidden="true"></span></button>
+    <nav class="nav-links" id="nav-links" aria-label="Main">
+      <a href="index.html#work">Work</a>
+      <a href="index.html#ai">How I work</a>
+      <a href="index.html#words">Recommendations</a>
+      <a href="index.html#contact">Contact</a>
       <a class="btn btn-small" href="assets/CV_Temuri_Razmadze.pdf" download aria-label="Download CV (PDF)"><span class="cv-long">Download CV</span><span class="cv-short" aria-hidden="true">CV</span></a>
     </nav>
   </div>
@@ -258,6 +265,9 @@ def page(c, nxt):
 
 for i,c in enumerate(CASES):
     nxt = CASES[(i+1) % len(CASES)]
+    if c.get("standalone"):
+        print("skip ", c["slug"] + ".html (hand-maintained — not generated)")
+        continue
     with open(f"{c['slug']}.html","w") as f:
         f.write(page(c, nxt))
     print("wrote", c["slug"] + ".html")
