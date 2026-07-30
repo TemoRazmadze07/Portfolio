@@ -550,3 +550,64 @@
     }
   })();
 })();
+
+/* ---------- AI v3 console: prompts type; the matching point lights up ---------- */
+(() => {
+  const typed = document.getElementById("ai3Typed");
+  const out = document.getElementById("ai3Out");
+  const tool = document.getElementById("ai3Tool");
+  if (!typed || !out) return;
+  const PAIRS = [
+    ["prototype the fix directly in the product repo",
+     "✓ tested in real code — decision lands dev-ready", "Claude Code"],
+    ["give me 8 directions for the freelancer dashboard",
+     "✓ wider exploration before committing", "Lovable · Figma Make"],
+    ["critique this flow — IA, edge cases, WCAG. be harsh",
+     "✓ issues caught before the stakeholder review, not after", "Claude Code · ChatGPT"],
+    ["synthesize 14 interviews across US · DE · FR · PL",
+     "✓ research synthesis: days → hours, every market heard", "ChatGPT · Gemini"]
+  ];
+  const points = [0, 1, 2, 3].map((i) => document.getElementById("ai3p" + i));
+  const light = (idx) => points.forEach((p, i) => p && p.classList.toggle("on", i === idx));
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    typed.textContent = PAIRS[0][0];
+    out.textContent = PAIRS[0][1];
+    out.classList.add("show");
+    if (tool) tool.textContent = PAIRS[0][2];
+    light(0);
+    return;
+  }
+  let visible = true;
+  if ("IntersectionObserver" in window) {
+    const sec = document.getElementById("ai3");
+    new IntersectionObserver((es) => { visible = es[es.length - 1].isIntersecting; }, { rootMargin: "80px 0px" }).observe(sec);
+  }
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const waitVisible = async () => { while (!visible) await sleep(400); };
+  (async () => {
+    let i = 0;
+    for (;;) {
+      const [q, a, t] = PAIRS[i % PAIRS.length];
+      await waitVisible();
+      if (tool) tool.textContent = t;
+      light(i % PAIRS.length);
+      for (let c = 1; c <= q.length; c++) {
+        typed.textContent = q.slice(0, c);
+        await sleep(26 + Math.random() * 26);
+      }
+      await sleep(380);
+      out.textContent = a;
+      out.classList.add("show");
+      await sleep(2700);
+      await waitVisible();
+      out.classList.remove("show");
+      await sleep(320);
+      while (typed.textContent.length) {
+        typed.textContent = typed.textContent.slice(0, -3);
+        await sleep(11);
+      }
+      await sleep(420);
+      i++;
+    }
+  })();
+})();
