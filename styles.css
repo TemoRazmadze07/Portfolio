@@ -525,10 +525,6 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
 .ai-num { font-size: 13px; font-weight: 800; color: var(--accent); letter-spacing: .08em; }
 .ai-card h3 { font-size: 18px; letter-spacing: -.01em; }
 .ai-card p { font-size: 15px; line-height: 1.62; }
-.ai-outcome {
-  margin-top: 28px; font-size: 16.5px; font-weight: 600; color: var(--ink);
-  max-width: 66ch; border-left: 3px solid var(--accent); padding-left: 16px;
-}
 
 /* ---------- testimonial extras (real recs) ---------- */
 .t-avatar { display: inline-flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 13.5px; letter-spacing: .02em; }
@@ -707,12 +703,6 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
 .ai-panel .ai-card h3 { color: #fff; }
 .ai-panel .ai-card p { color: rgba(223,229,244,.76); }
 .ai-panel .ai-num { color: #8fb3ff; }
-
-.ai-foot {
-  position: relative; margin-top: 40px; padding-top: 26px; border-top: 1px solid rgba(255,255,255,.14);
-  display: flex; align-items: center; justify-content: space-between; gap: 26px; flex-wrap: wrap;
-}
-.ai-outcome-dark { font-size: 16px; font-weight: 600; color: #fff; max-width: 52ch; }
 
 .ai-icon {
   width: 40px; height: 40px; border-radius: 11px; display: inline-flex;
