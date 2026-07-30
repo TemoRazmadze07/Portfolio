@@ -1218,8 +1218,17 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
 .ai3-out.show { opacity: 1; transform: none; }
 .ai3-stack {
   border-top: 1px solid rgba(255, 255, 255, .07); padding: 12px 20px;
-  font-size: 12.5px; letter-spacing: .03em; color: rgba(223, 229, 244, .42);
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px;
+  font-size: 12px; letter-spacing: .02em;
 }
+.ai3-slabel { color: rgba(223, 229, 244, .4); }
+.ai3-sicon {
+  display: inline-flex; align-items: center; gap: 7px;
+  color: rgba(223, 229, 244, .72); opacity: .48;
+  transition: opacity .45s ease, color .45s ease;
+}
+.ai3-sicon svg { width: 14px; height: 14px; flex: 0 0 auto; }
+.ai3-sicon.on { opacity: 1; color: #9db9ff; }
 .ai3-points {
   list-style: none; margin: 44px auto 0; padding: 0; max-width: 1040px;
   display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
@@ -1249,7 +1258,12 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
   .ai3 { padding: 76px 0 70px; }
   .ai3-body { min-height: 200px; padding: 22px 20px 20px; }
   .ai3-line { font-size: 14.5px; }
-  .ai3-stack { font-size: 11px; }
+  .ai3-stack { font-size: 11px; gap: 8px 14px; }
+}
+@media (max-width: 560px) {
+  /* icon-only dock on small phones */
+  .ai3-sicon { font-size: 0; gap: 0; }
+  .ai3-sicon svg { width: 16px; height: 16px; }
 }
 @media (max-width: 560px) {
   .ai3-points { grid-template-columns: 1fr; gap: 12px; }

@@ -558,23 +558,27 @@
   const tool = document.getElementById("ai3Tool");
   if (!typed || !out) return;
   const PAIRS = [
-    ["prototype the fix directly in the product repo",
-     "✓ tested in real code — decision lands dev-ready", "Claude Code"],
-    ["give me 8 directions for the freelancer dashboard",
-     "✓ wider exploration before committing", "Lovable · Figma Make"],
-    ["critique this flow — IA, edge cases, WCAG. be harsh",
-     "✓ issues caught before the stakeholder review, not after", "Claude Code · ChatGPT"],
-    ["synthesize 14 interviews across US · DE · FR · PL",
-     "✓ research synthesis: days → hours, every market heard", "ChatGPT · Gemini"]
+    ["ship the fix in-repo — match our tokens, zero new debt",
+     "✓ dev-ready decision, no handoff drift", "Claude Code", ["claude"]],
+    ["8 dashboard concepts — 2 safe, 4 novel, 2 wild",
+     "✓ divergence in hours; the choice backed by evidence", "Lovable · Figma Make", ["lovable", "figma"]],
+    ["red-team this checkout: drop-offs, edge cases, WCAG 2.2",
+     "✓ 6 issues fixed before the stakeholder review", "Claude Code · ChatGPT", ["claude", "gpt"]],
+    ["cluster 14 interviews into JTBD themes — keep dissent",
+     "✓ days → hours; dissenting voices kept in the map", "ChatGPT · Gemini · DeepSeek", ["gpt", "gemini", "deepseek"]]
   ];
   const points = [0, 1, 2, 3].map((i) => document.getElementById("ai3p" + i));
   const light = (idx) => points.forEach((p, i) => p && p.classList.toggle("on", i === idx));
+  const dock = {};
+  document.querySelectorAll(".ai3-sicon[data-tool]").forEach((el) => { dock[el.dataset.tool] = el; });
+  const lightDock = (keys) => Object.keys(dock).forEach((k) => dock[k].classList.toggle("on", keys.includes(k)));
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     typed.textContent = PAIRS[0][0];
     out.textContent = PAIRS[0][1];
     out.classList.add("show");
     if (tool) tool.textContent = PAIRS[0][2];
     light(0);
+    lightDock(PAIRS[0][3]);
     return;
   }
   let visible = true;
@@ -587,10 +591,11 @@
   (async () => {
     let i = 0;
     for (;;) {
-      const [q, a, t] = PAIRS[i % PAIRS.length];
+      const [q, a, t, keys] = PAIRS[i % PAIRS.length];
       await waitVisible();
       if (tool) tool.textContent = t;
       light(i % PAIRS.length);
+      lightDock(keys);
       for (let c = 1; c <= q.length; c++) {
         typed.textContent = q.slice(0, c);
         await sleep(26 + Math.random() * 26);
