@@ -9,7 +9,7 @@ out of the shared template and this script no longer writes it. TBC stays in the
 CASES list only so the "next case study" loop still links correctly to/from it
 (rogers → tbc → golance). Edit tbc.html directly; edit the other three here.
 """
-V = "44"  # cache-bust version, keep in sync with index.html
+V = "45"  # cache-bust version, keep in sync with index.html
 
 CASES = [
  dict(

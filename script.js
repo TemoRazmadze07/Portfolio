@@ -496,3 +496,57 @@
   window.addEventListener("scroll", () => { if (!raf) raf = requestAnimationFrame(update); }, { passive: true });
   if (mq.addEventListener) mq.addEventListener("change", () => { if (!mq.matches) nav.classList.remove("nav-hide"); });
 })();
+
+/* ---------- AI v2 console: real workflow prompts type themselves ---------- */
+(() => {
+  const typed = document.getElementById("ai2Typed");
+  const out = document.getElementById("ai2Out");
+  if (!typed || !out) return;
+  const PAIRS = [
+    ["prototype the fix directly in the product repo",
+     "✓ tested in real code — decision lands dev-ready (Claude Code)"],
+    ["give me 8 directions for the freelancer dashboard",
+     "✓ wider exploration before committing (Lovable · Figma Make)"],
+    ["critique this flow — IA, edge cases, WCAG. be harsh",
+     "✓ issues caught before the stakeholder review, not after"],
+    ["synthesize 14 interviews across US · DE · FR · PL",
+     "✓ research synthesis: days → hours, every market heard"]
+  ];
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    typed.textContent = PAIRS[0][0];
+    out.textContent = PAIRS[0][1];
+    out.classList.add("show");
+    return;
+  }
+  let visible = true;
+  if ("IntersectionObserver" in window) {
+    const sec = document.getElementById("ai2");
+    new IntersectionObserver((es) => { visible = es[es.length - 1].isIntersecting; }, { rootMargin: "80px 0px" }).observe(sec);
+  }
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const waitVisible = async () => { while (!visible) await sleep(400); };
+  (async () => {
+    let i = 0;
+    for (;;) {
+      const [q, a] = PAIRS[i % PAIRS.length];
+      await waitVisible();
+      for (let c = 1; c <= q.length; c++) {
+        typed.textContent = q.slice(0, c);
+        await sleep(26 + Math.random() * 26);
+      }
+      await sleep(380);
+      out.textContent = a;
+      out.classList.add("show");
+      await sleep(2700);
+      await waitVisible();
+      out.classList.remove("show");
+      await sleep(320);
+      while (typed.textContent.length) {
+        typed.textContent = typed.textContent.slice(0, -3);
+        await sleep(11);
+      }
+      await sleep(420);
+      i++;
+    }
+  })();
+})();
