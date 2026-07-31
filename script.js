@@ -149,23 +149,6 @@
   pairs.forEach(([sec]) => io.observe(sec));
 })();
 
-// AI panel: its orb/aurora animations are ambient and infinite — pause them
-// whenever the panel is offscreen so they cost nothing while out of view.
-(function () {
-  const panel = document.querySelector(".ai-panel");
-  if (!panel || !("IntersectionObserver" in window)) return;
-  // Set the initial state synchronously — IO's first callback can be delayed
-  // (or throttled entirely in embedded webviews), and the panel is usually
-  // below the fold on load.
-  const r = panel.getBoundingClientRect();
-  panel.classList.toggle("paused", r.bottom < -100 || r.top > window.innerHeight + 100);
-  const io = new IntersectionObserver((entries) => {
-    const e = entries[entries.length - 1];
-    panel.classList.toggle("paused", !e.isIntersecting);
-  }, { rootMargin: "100px 0px" });
-  io.observe(panel);
-})();
-
 // Touch carousels: on coarse-pointer devices the CSS transform-marquees can't be
 // swiped and their :hover pause sticks on a tap. So on touch we turn the tracks
 // into native horizontal scrollers (see styles.css) and drive a gentle auto-
@@ -497,65 +480,13 @@
   if (mq.addEventListener) mq.addEventListener("change", () => { if (!mq.matches) nav.classList.remove("nav-hide"); });
 })();
 
-/* ---------- AI v2 console: real workflow prompts type themselves ---------- */
+/* ---------- AI console: real workflow prompts type themselves ----------
+   Nothing sits under the console, so this driver only types the prompt/outcome pair
+   and lights the matching tools in the title bar and the logo dock below. */
 (() => {
-  const typed = document.getElementById("ai2Typed");
-  const out = document.getElementById("ai2Out");
-  if (!typed || !out) return;
-  const PAIRS = [
-    ["prototype the fix directly in the product repo",
-     "✓ tested in real code — decision lands dev-ready (Claude Code)"],
-    ["give me 8 directions for the freelancer dashboard",
-     "✓ wider exploration before committing (Lovable · Figma Make)"],
-    ["critique this flow — IA, edge cases, WCAG. be harsh",
-     "✓ issues caught before the stakeholder review, not after"],
-    ["synthesize 14 interviews across US · DE · FR · PL",
-     "✓ research synthesis: days → hours, every market heard"]
-  ];
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    typed.textContent = PAIRS[0][0];
-    out.textContent = PAIRS[0][1];
-    out.classList.add("show");
-    return;
-  }
-  let visible = true;
-  if ("IntersectionObserver" in window) {
-    const sec = document.getElementById("ai2");
-    new IntersectionObserver((es) => { visible = es[es.length - 1].isIntersecting; }, { rootMargin: "80px 0px" }).observe(sec);
-  }
-  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-  const waitVisible = async () => { while (!visible) await sleep(400); };
-  (async () => {
-    let i = 0;
-    for (;;) {
-      const [q, a] = PAIRS[i % PAIRS.length];
-      await waitVisible();
-      for (let c = 1; c <= q.length; c++) {
-        typed.textContent = q.slice(0, c);
-        await sleep(26 + Math.random() * 26);
-      }
-      await sleep(380);
-      out.textContent = a;
-      out.classList.add("show");
-      await sleep(2700);
-      await waitVisible();
-      out.classList.remove("show");
-      await sleep(320);
-      while (typed.textContent.length) {
-        typed.textContent = typed.textContent.slice(0, -3);
-        await sleep(11);
-      }
-      await sleep(420);
-      i++;
-    }
-  })();
-})();
-
-/* ---------- AI v3 console: prompts type; the matching point lights up ---------- */
-(() => {
-  const typed = document.getElementById("ai3Typed");
-  const out = document.getElementById("ai3Out");
-  const tool = document.getElementById("ai3Tool");
+  const typed = document.getElementById("aiTyped");
+  const out = document.getElementById("aiOut");
+  const tool = document.getElementById("aiTool");
   if (!typed || !out) return;
   const PAIRS = [
     ["ship the fix in-repo — match our tokens, zero new debt",
@@ -567,24 +498,24 @@
     ["cluster 14 interviews into JTBD themes — keep dissent",
      "✓ days → hours; dissenting voices kept in the map", "ChatGPT · Gemini · DeepSeek", ["gpt", "gemini", "deepseek"]]
   ];
-  const points = [0, 1, 2, 3].map((i) => document.getElementById("ai3p" + i));
-  const light = (idx) => points.forEach((p, i) => p && p.classList.toggle("on", i === idx));
   const dock = {};
-  document.querySelectorAll(".ai3-sicon[data-tool]").forEach((el) => { dock[el.dataset.tool] = el; });
+  document.querySelectorAll("#ai .ai-sicon[data-tool]").forEach((el) => { dock[el.dataset.tool] = el; });
   const lightDock = (keys) => Object.keys(dock).forEach((k) => dock[k].classList.toggle("on", keys.includes(k)));
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     typed.textContent = PAIRS[0][0];
     out.textContent = PAIRS[0][1];
     out.classList.add("show");
     if (tool) tool.textContent = PAIRS[0][2];
-    light(0);
     lightDock(PAIRS[0][3]);
     return;
   }
+  const sec = document.getElementById("ai");
   let visible = true;
-  if ("IntersectionObserver" in window) {
-    const sec = document.getElementById("ai3");
-    new IntersectionObserver((es) => { visible = es[es.length - 1].isIntersecting; }, { rootMargin: "80px 0px" }).observe(sec);
+  if (sec && "IntersectionObserver" in window) {
+    new IntersectionObserver((es) => {
+      visible = es[es.length - 1].isIntersecting;
+      sec.classList.toggle("paused", !visible);
+    }, { rootMargin: "80px 0px" }).observe(sec);
   }
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   const waitVisible = async () => { while (!visible) await sleep(400); };
@@ -594,7 +525,6 @@
       const [q, a, t, keys] = PAIRS[i % PAIRS.length];
       await waitVisible();
       if (tool) tool.textContent = t;
-      light(i % PAIRS.length);
       lightDock(keys);
       for (let c = 1; c <= q.length; c++) {
         typed.textContent = q.slice(0, c);
@@ -616,3 +546,194 @@
     }
   })();
 })();
+
+// --- case-v2 gallery -------------------------------------------------------
+// Auto-advancing slideshow for a .case2-gallery band. Same rules as the
+// marquees elsewhere in this file: never runs under reduced motion, idles while
+// offscreen, pauses on hover / keyboard focus / touch.
+//
+// The active dot stretches into a bar whose accent fill sweeps across over the
+// slide's dwell — a visible countdown to the next slide. Pausing FREEZES both
+// the fill and the timer at the same instant and resuming continues from there,
+// so the bar always tells the truth about when the slide will change. That's
+// why the timer tracks its own `remaining` instead of re-arming a full dwell.
+//
+// Navigation is dots, arrows and swipe ONLY. A click on the slide must stay
+// free for the image's tap-to-enlarge <a>, so a horizontal drag past the
+// threshold suppresses the click that would otherwise follow the touch.
+(function () {
+  const galleries = document.querySelectorAll(".case2-gallery");
+  if (!galleries.length) return;
+
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const DWELL = 5500;   // ms a slide holds before advancing on its own
+  const RESUME = 9000;  // longer dwell after a manual move, so a deliberate choice isn't yanked away
+  const SWIPE = 45;     // px of horizontal travel that counts as a swipe
+
+  galleries.forEach((root) => {
+    const track = root.querySelector(".c2g-track");
+    const slides = Array.from(root.querySelectorAll(".c2g-slide"));
+    if (!track || slides.length < 2) return;
+
+    const dots = Array.from(root.querySelectorAll(".c2g-dot"));
+    const viewport = root.querySelector(".c2g-viewport");
+    let i = 0, timer = null, held = false, visible = true, paused = false;
+    let dwell = DWELL, startedAt = 0, remaining = DWELL;
+
+    // Slides differ in height, and the track box is as tall as the TALLEST one —
+    // which parks a dead gap between a shorter image and the dots. The viewport
+    // hugs the active slide instead (CSS transitions the change). Re-measured on
+    // image load and resize, since both change what "the slide's height" is.
+    function fitHeight() {
+      // offsetHeight: layout height, immune to the inactive slide's scale(.92)
+      const content = slides[i].querySelector("a") || slides[i];
+      const h = content.offsetHeight;
+      if (h && viewport) viewport.style.height = h + "px";
+    }
+    slides.forEach((s) => {
+      const img = s.querySelector("img");
+      if (img && !img.complete) img.addEventListener("load", fitHeight);
+    });
+    window.addEventListener("resize", fitHeight);
+    // self-heal: a paint while the tab is hidden measures a 0-height layout and
+    // skips; re-fit once the slide transition lands or the tab wakes back up
+    track.addEventListener("transitionend", fitHeight);
+    document.addEventListener("visibilitychange", () => { if (!document.hidden) fitHeight(); });
+
+    function paint() {
+      track.style.transform = "translateX(" + -i * 100 + "%)";
+      fitHeight();
+      slides.forEach((s, n) => {
+        const on = n === i;
+        s.classList.toggle("is-active", on);
+        // keep offscreen slides out of the tab order and off the AT tree,
+        // otherwise Tab lands on a link nobody can see
+        s.setAttribute("aria-hidden", on ? "false" : "true");
+        const a = s.querySelector("a");
+        if (a) a.tabIndex = on ? 0 : -1;
+      });
+      dots.forEach((d, n) => {
+        d.classList.toggle("is-active", n === i);
+        d.setAttribute("aria-selected", n === i ? "true" : "false");
+      });
+    }
+
+    // Restart the fill sweep on the dot that just became the bar. Reassigning
+    // the class alone won't replay a CSS animation on an element that already
+    // had it, so knock the animation out and force a reflow between.
+    function restartFill() {
+      root.style.setProperty("--c2g-dwell", dwell + "ms");
+      const fill = dots[i] && dots[i].querySelector(".c2g-fill");
+      if (!fill) return;
+      fill.style.animation = "none";
+      void fill.offsetWidth;
+      fill.style.animation = "";
+    }
+
+    function arm(ms) {
+      clearTimeout(timer);
+      remaining = ms;
+      startedAt = performance.now();
+      if (!reduced && !paused) timer = setTimeout(step, ms);
+    }
+
+    function step() { go(i + 1); }
+
+    function go(n, manual) {
+      i = (n + slides.length) % slides.length;
+      dwell = manual ? RESUME : DWELL;
+      paint();
+      restartFill();
+      arm(dwell);
+    }
+
+    // One pause state covering hover, focus and offscreen. Freezing stores the
+    // time left; releasing arms a timer for exactly that much. The CSS fill is
+    // frozen by .is-paused at the same moment, so the two stay in step.
+    function sync() {
+      const next = held || !visible;
+      if (next === paused) return;
+      paused = next;
+      root.classList.toggle("is-paused", paused);
+      if (paused) {
+        clearTimeout(timer);
+        remaining = Math.max(0, remaining - (performance.now() - startedAt));
+      } else {
+        startedAt = performance.now();
+        if (!reduced) timer = setTimeout(step, remaining);
+      }
+    }
+    const hold = (v) => { held = v; sync(); };
+
+    root.querySelector(".c2g-prev")?.addEventListener("click", () => go(i - 1, true));
+    root.querySelector(".c2g-next")?.addEventListener("click", () => go(i + 1, true));
+    dots.forEach((d, n) => d.addEventListener("click", () => go(n, true)));
+
+    root.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft") { go(i - 1, true); e.preventDefault(); }
+      else if (e.key === "ArrowRight") { go(i + 1, true); e.preventDefault(); }
+    });
+
+    root.addEventListener("mouseenter", () => hold(true));
+    root.addEventListener("mouseleave", () => hold(false));
+    root.addEventListener("focusin", () => hold(true));
+    root.addEventListener("focusout", () => hold(false));
+
+    // swipe. Tracked on the viewport so the gesture works over the image itself.
+    const view = root.querySelector(".c2g-viewport") || root;
+    let x0 = null, y0 = null, swiped = false;
+    view.addEventListener("touchstart", (e) => {
+      x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; swiped = false;
+      hold(true);
+    }, { passive: true });
+    view.addEventListener("touchmove", (e) => {
+      if (x0 === null || swiped) return;
+      const dx = e.touches[0].clientX - x0, dy = e.touches[0].clientY - y0;
+      // only claim clearly-horizontal travel; vertical stays a page scroll
+      if (Math.abs(dx) > SWIPE && Math.abs(dx) > Math.abs(dy)) {
+        go(i + (dx < 0 ? 1 : -1), true);
+        swiped = true;
+      }
+    }, { passive: true });
+    view.addEventListener("touchend", () => { x0 = null; hold(false); }, { passive: true });
+    // a completed swipe must not also open the enlarged asset
+    view.addEventListener("click", (e) => { if (swiped) { e.preventDefault(); swiped = false; } }, true);
+
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver((es) => {
+        visible = es[es.length - 1].isIntersecting;
+        sync();
+      }, { rootMargin: "80px 0px" }).observe(root);
+    }
+
+    paint();
+    restartFill();
+    arm(DWELL); // no-ops under reduced motion
+  });
+})();
+
+// --- click-to-load video facade (.c2vid) -----------------------------------
+// Swaps the thumbnail button for a YouTube iframe on the first click. Nothing
+// from youtube.com is requested before that, which is the whole point: the
+// visitor who scrolls past pays nothing for a video they never played. Uses
+// youtube-nocookie.com, and autoplay=1 so the click that loads it also starts
+// it — otherwise the press-play gesture is spent on loading the player.
+(() => {
+  document.querySelectorAll(".c2vid").forEach((v) => {
+    const btn = v.querySelector(".c2vid-btn");
+    const id = v.dataset.yt;
+    if (!btn || !id) return;
+    btn.addEventListener("click", () => {
+      const f = document.createElement("iframe");
+      f.className = "c2vid-frame";
+      f.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&modestbranding=1`;
+      f.title = v.dataset.title || "Product film";
+      f.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+      f.referrerPolicy = "strict-origin-when-cross-origin";
+      f.allowFullscreen = true;
+      btn.replaceWith(f);
+      f.focus();
+    });
+  });
+})();
+

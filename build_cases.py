@@ -1,15 +1,19 @@
 #!/usr/bin/env python3
-"""Generate the case-study pages (golance/novocure/rogers .html) from one
-data structure. Content source of truth: ../CASE_STUDIES.md.
-Regenerate: python3 build_cases.py
+"""Generate the case-study pages from one data structure.
+Content source of truth: ../CASE_STUDIES.md. Regenerate: python3 build_cases.py
 
-NOTE: tbc.html is now HAND-MAINTAINED (it carries `standalone=True` below) — it
-is the first case study being built out with real screens, so it has graduated
-out of the shared template and this script no longer writes it. TBC stays in the
-CASES list only so the "next case study" loop still links correctly to/from it
-(rogers → tbc → golance). Edit tbc.html directly; edit the other three here.
+NOTE: this script no longer writes ANY page. All four cases are now
+HAND-MAINTAINED (they carry `standalone=True` below) — as each one got real
+screens it graduated out of the shared template onto the case-v2 band rhythm,
+and rogers was the last to go (2026-07-31). Edit the .html files directly.
+
+It is kept rather than deleted because it is still the reference copy of the
+shared HEAD/nav/footer markup and of the case metadata, and because the CASES
+list is what documents the "next case study" ring (rogers → tbc → golance →
+novocure → rogers). If a fifth case is ever added from scratch, generating it
+here first and then graduating it is still the cheapest path.
 """
-V = "47"  # cache-bust version, keep in sync with index.html
+V = "79"  # cache-bust version, keep in sync with index.html
 
 CASES = [
  dict(
@@ -58,7 +62,7 @@ CASES = [
   reflection="Next I'd push explainability further — surfacing why a match scored the way it did, not just how confident the model is.",
  ),
  dict(
-  slug="novocure", tint="tint-sand", ph="ph-novocure",
+  slug="novocure", standalone=True, tint="tint-sand", ph="ph-novocure",
   kicker="Novocure · Healthcare, via EPAM",
   title="Restarting an oncology HCP portal from zero — three markets, WCAG AA, +21% sales",
   meta=[("Role","Senior Experience Designer (design lead from mid-project)"),
@@ -81,7 +85,7 @@ CASES = [
   reflection="I'd formalize accessibility annotations into the design library from day one — we retrofitted documentation that should have been born with the components.",
  ),
  dict(
-  slug="rogers", tint="tint-rose", ph="ph-rogers",
+  slug="rogers", standalone=True, tint="tint-rose", ph="ph-rogers",
   kicker="Rogers Communications · Telecom, via EPAM",
   title="OneView: cutting the sales rep's cognitive load — −25% time-on-task, −80% errors",
   meta=[("Role","Experience Designer"),

@@ -12,10 +12,15 @@
   --accent-ink: #1e3fd0;
   --line: #e7e9ee;
 
-  --tint-blue: #eef3fb;
-  --tint-green: #edf7f0;
-  --tint-sand: #faf4ea;
-  --tint-rose: #faeff0;
+  /* ONE band color site-wide. The four tint names survive as aliases so no
+     HTML changes (and tbc.html's inline SVG fill=var(--tint-sand) keeps
+     matching its band) — but they all resolve to the same light blue now:
+     alternating sand/green/rose bands read as noise when scrolling. */
+  --band: #eef3fb;
+  --tint-blue: var(--band);
+  --tint-green: var(--band);
+  --tint-sand: var(--band);
+  --tint-rose: var(--band);
 
   --r-lg: 28px;
   --r-md: 18px;
@@ -186,15 +191,34 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
 }
 .reel-player img { display: block; width: 100%; height: auto; transform: scale(1.01); transition: transform .8s cubic-bezier(.2,.65,.25,1); }
 .reel-player:hover img { transform: scale(1.045); }
+/* same glass treatment as .c2vid-play on the case page — one play button across
+   the site, over the same poster */
 .reel-play {
-  position: absolute; top: 50%; left: 50%; width: 74px; height: 74px; margin: -37px 0 0 -37px;
-  border-radius: 50%; background: rgba(255,255,255,.94); color: var(--accent);
+  position: absolute; top: 50%; left: 50%; width: 64px; height: 64px; margin: -32px 0 0 -32px;
+  border-radius: 50%; color: #fff;
+  background: linear-gradient(150deg, rgba(255,255,255,.30), rgba(255,255,255,.10) 62%);
+  -webkit-backdrop-filter: blur(15px) saturate(175%);
+  backdrop-filter: blur(15px) saturate(175%);
+  border: 1px solid rgba(255,255,255,.40);
   display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 12px 34px -8px rgba(0,0,0,.5);
-  transition: transform .3s ease, box-shadow .3s ease;
+  box-shadow:
+    inset 0 1.5px 0 rgba(255,255,255,.60),
+    inset 0 -18px 30px rgba(255,255,255,.05),
+    0 20px 48px -14px rgba(0,0,0,.60);
+  transition: transform .4s cubic-bezier(.22,.61,.36,1), background .35s ease, border-color .35s ease;
 }
-.reel-play svg { width: 30px; height: 30px; fill: currentColor; margin-left: 3px; }
-.reel-player:hover .reel-play { transform: scale(1.09); box-shadow: 0 16px 40px -8px rgba(0,0,0,.6); }
+.reel-play::before {
+  content: ""; position: absolute; inset: -11px; border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.20);
+  transition: transform .55s cubic-bezier(.22,.61,.36,1), opacity .55s ease;
+}
+.reel-player:hover .reel-play::before { transform: scale(1.14); opacity: .45; }
+.reel-play svg { width: 23px; height: 23px; fill: currentColor; filter: drop-shadow(0 2px 5px rgba(0,0,0,.45)); }
+.reel-player:hover .reel-play {
+  transform: scale(1.07);
+  background: linear-gradient(150deg, rgba(255,255,255,.42), rgba(255,255,255,.16) 62%);
+  border-color: rgba(255,255,255,.58);
+}
 .reel-chip {
   position: absolute; left: 14px; bottom: 12px;
   font-size: 12.5px; font-weight: 700; color: #fff;
@@ -205,6 +229,7 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
 @media (prefers-reduced-motion: reduce) {
   .reel-player img, .reel-player:hover img { transform: none; transition: none; }
   .reel-play, .reel-player:hover .reel-play { transition: none; transform: none; }
+  .reel-play::before, .reel-player:hover .reel-play::before { transition: none; transform: none; }
 }
 
 /* ---------- work ---------- */
@@ -355,53 +380,101 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
 @keyframes work-scroll { to { transform: translateX(-50%); } }
 
 .pcard {
-  width: 340px; height: 466px; flex: none; margin-right: 24px;
+  width: 350px; height: 500px; flex: none; margin-right: 24px;
   position: relative; display: flex; flex-direction: column; overflow: hidden;
-  border-radius: var(--r-lg); text-decoration: none; color: var(--body);
-  border: 1px solid color-mix(in srgb, var(--ink) 7%, transparent);
+  border-radius: var(--r-lg); text-decoration: none; color: rgba(255,255,255,.86);
+  border: 1px solid rgba(255,255,255,.07);
   transition: transform .5s cubic-bezier(.2,.65,.25,1), box-shadow .5s cubic-bezier(.2,.65,.25,1);
 }
-.pcard:hover { transform: translateY(-8px); box-shadow: 0 34px 60px -26px rgba(14,27,44,.32); }
+.pcard:hover { transform: translateY(-8px); box-shadow: 0 34px 60px -24px rgba(14,27,44,.45); }
 
-.pcard-top { padding: 28px 28px 0; }
-.pcard-cat { font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--mute); margin-bottom: 10px; }
-.pcard-brand { font-size: 25px; font-weight: 800; color: var(--ink); letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 10px; }
-.pcard-desc { font-size: 14.5px; line-height: 1.5; color: var(--body); }
+/* dark brand posters (user direction 2026-07-31, agency-card reference):
+   each project gets its own dark background — a brand-colored glow plus a
+   per-project pattern — with the screens shown in real device mockups
+   (assets/pcard-*-device.webp, generated by ../pcard_mockups.py).
+   The site-wide `.tint-*` bands stay light; these override .pcard only. */
+.pcard.tint-blue {  /* TBC — deep banking navy, concentric arcs, sky-blue glow */
+  background:
+    repeating-radial-gradient(circle at 112% -14%, transparent 0 46px, rgba(255,255,255,.045) 46px 47.5px),
+    radial-gradient(120% 85% at 82% 108%, rgba(0,163,224,.38), transparent 62%),
+    linear-gradient(160deg, #0c2743, #06182e);
+}
+.pcard.tint-green {  /* goLance — the gl-reel poster language: #020b2e, dot grid, purple glow */
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22'%3E%3Ccircle cx='1.5' cy='1.5' r='1' fill='rgba(255,255,255,0.10)'/%3E%3C/svg%3E"),
+    radial-gradient(95% 75% at 88% 100%, rgba(116,52,250,.42), transparent 65%),
+    radial-gradient(55% 45% at 8% 108%, rgba(202,117,208,.22), transparent 70%),
+    #020b2e;
+}
+.pcard.tint-sand {  /* Novocure — clinical navy, plus-grid, soft cyan glow */
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28'%3E%3Cpath d='M14 10v8M10 14h8' stroke='rgba(255,255,255,0.07)' stroke-width='1'/%3E%3C/svg%3E"),
+    radial-gradient(110% 80% at 85% 110%, rgba(97,180,228,.34), transparent 62%),
+    linear-gradient(165deg, #093057, #041e3a);
+}
+.pcard.tint-rose {  /* Rogers — near-black maroon, honeycomb, red glow */
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100'%3E%3Cpath d='M28 66L0 50L0 16L28 0L56 16L56 50L28 66L28 100' fill='none' stroke='rgba(255,255,255,0.05)'/%3E%3Cpath d='M28 0L28 34L0 50L0 84L28 100L56 84L56 50' fill='none' stroke='rgba(255,255,255,0.05)'/%3E%3C/svg%3E"),
+    radial-gradient(110% 80% at 80% 112%, rgba(238,39,34,.36), transparent 60%),
+    linear-gradient(160deg, #23090b, #120405);
+}
+
+.pcard-top { padding: 26px 26px 0; }
+.pcard-cat { font-size: 11.5px; font-weight: 700; letter-spacing: .11em; text-transform: uppercase; color: rgba(255,255,255,.55); margin-bottom: 12px; }
+/* brand logo replaces the old text name (alt text keeps the name for AT).
+   goLance/Novocure wordmarks contain near-navy fills that vanish on dark,
+   so they're knocked out white; TBC (sky blue) and Rogers (red) carry their
+   own color against the dark ground. Heights tuned per wordmark. */
+.pcard-logo { margin-bottom: 12px; }
+.pcard-logo img { display: block; width: auto; height: 30px; }
+.pcard.tint-green .pcard-logo img { height: 24px; filter: brightness(0) invert(1); }
+.pcard.tint-sand  .pcard-logo img { height: 19px; filter: brightness(0) invert(1); }
+.pcard.tint-rose  .pcard-logo img { height: 22px; }
+.pcard-desc { font-size: 14.5px; line-height: 1.5; color: rgba(255,255,255,.86); }
 .pcard-chips { list-style: none; display: flex; flex-wrap: wrap; gap: 7px; margin-top: 14px; }
 .pcard-chips li {
-  font-size: 11.5px; font-weight: 700; color: var(--ink);
-  background: color-mix(in srgb, #fff 68%, transparent);
-  border: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
+  font-size: 11.5px; font-weight: 700; color: #fff;
+  background: rgba(255,255,255,.10);
+  border: 1px solid rgba(255,255,255,.16);
   padding: 5px 10px; border-radius: var(--r-pill);
 }
 
-/* device visual bleeds to the bottom edge of the poster */
-.pcard-figure { margin-top: 20px; flex: 1 1 auto; min-height: 150px; position: relative; overflow: hidden; }
-.pcard-figure img {
-  display: block; width: 100%; height: 100%; object-fit: cover; object-position: top center;
-  transition: transform .6s cubic-bezier(.2,.65,.25,1);
+/* the screen sits in a plain rounded box inside the card (Temuri's call:
+   no device frames) — same box size on every card, bottom-anchored, so the
+   row stays aligned; the backgrounds carry the variety. Hover lifts it. */
+.pcard-figure { margin-top: 18px; flex: 1 1 auto; min-height: 200px; position: relative; }
+.pcard-screen {
+  position: absolute; left: 16px; right: 16px; bottom: 16px; height: 220px;
+  display: block; overflow: hidden; border-radius: 12px;
+  background: #fff;
+  border: 1px solid rgba(255,255,255,.18);
+  box-shadow: 0 20px 38px -16px rgba(0,0,0,.6);
+  transition: transform .55s cubic-bezier(.2,.65,.25,1);
 }
-.pcard:hover .pcard-figure img { transform: scale(1.04); }
-/* soft blend where the image meets the tinted text area */
-.pcard-figure::before {
-  content: ""; position: absolute; inset: 0 0 auto 0; height: 40px; z-index: 1;
-  background: linear-gradient(180deg, rgba(255,255,255,.55), transparent);
+.pcard-screen img {
+  display: block; width: 100%; height: 100%;
+  object-fit: cover; object-position: top center;
 }
+.pcard:hover .pcard-screen { transform: translateY(-7px); }
 
 /* corner affordance — always visible, nudges + turns accent on hover */
 .pcard-go {
   position: absolute; top: 20px; right: 20px; z-index: 2;
   width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center;
-  background: color-mix(in srgb, var(--ink) 90%, transparent); color: #fff;
+  background: rgba(255,255,255,.14); color: #fff;
   transition: transform .35s ease, background .35s ease;
 }
 .pcard:hover .pcard-go { transform: translate(2px, -2px) scale(1.08); background: var(--accent); }
 .pcard-go svg { width: 15px; height: 15px; }
 
 @media (max-width: 880px) {
-  .pcard { width: 268px; height: 418px; margin-right: 16px; }
-  .pcard-brand { font-size: 22px; }
+  .pcard { width: 276px; height: 432px; margin-right: 16px; }
+  .pcard-logo img { height: 23px; }
+  .pcard.tint-green .pcard-logo img { height: 21px; }
+  .pcard.tint-sand  .pcard-logo img { height: 17px; }
+  .pcard.tint-rose  .pcard-logo img { height: 19px; }
   .pcard-desc { font-size: 14px; }
+  .pcard-screen { left: 13px; right: 13px; bottom: 13px; height: 176px; }
   .work-track { animation-duration: 38s; }
 }
 
@@ -411,7 +484,7 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
   .work-track { animation: none; flex-wrap: wrap; justify-content: center; width: auto; gap: 24px; }
   .pcard { margin-right: 0; }
   .pcard.is-clone { display: none; }
-  .pcard-figure img { transition: none; }
+  .pcard-screen { transition: none; }
 }
 
 /* ---------- recommendations marquee ---------- */
@@ -513,19 +586,6 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
   .btn, .card, .t-card, .mock-window { transition: none; }
 }
 
-/* ---------- AI workflow section ---------- */
-.ai-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 6px; }
-@media (max-width: 880px) { .ai-grid { grid-template-columns: 1fr; } }
-.ai-card {
-  background: var(--surface); border: 1px solid var(--line); border-radius: 20px;
-  padding: 28px; display: flex; flex-direction: column; gap: 10px;
-  transition: transform .45s cubic-bezier(.2,.65,.25,1), box-shadow .45s cubic-bezier(.2,.65,.25,1);
-}
-.ai-card:hover { transform: translateY(-5px); box-shadow: 0 22px 44px -20px rgba(14,27,44,.2); }
-.ai-num { font-size: 13px; font-weight: 800; color: var(--accent); letter-spacing: .08em; }
-.ai-card h3 { font-size: 18px; letter-spacing: -.01em; }
-.ai-card p { font-size: 15px; line-height: 1.62; }
-
 /* ---------- testimonial extras (real recs) ---------- */
 .t-avatar { display: inline-flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 13.5px; letter-spacing: .02em; }
 .t-more { justify-content: center; gap: 12px; background: var(--tint-blue); border: none; text-decoration: none; }
@@ -621,31 +681,9 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
 
 .case-cta { padding: 76px 0 90px; }
 
-/* ---------- AI dark panel ---------- */
-.ai { padding: 72px 0 28px; }
-.ai-panel {
-  position: relative; overflow: hidden; border-radius: 32px; padding: 60px 56px 44px;
-  color: #dfe5f4;
-  background:
-    radial-gradient(1200px 620px at 88% -12%, rgba(84,116,255,.55), transparent 62%),
-    radial-gradient(900px 520px at -8% 112%, rgba(46,91,255,.5), transparent 62%),
-    linear-gradient(158deg, #0b1026 0%, #111b4d 46%, #1c30b5 100%);
-}
-/* Two decoupled background layers: an aurora layer that animates transform only
-   (compositor work, no repaints) and a static masked grid on top of it. Keeping
-   animated children out of the masked element means the mask is rasterized once. */
-.ai-glow { position: absolute; inset: 0; pointer-events: none; }
-.ai-glow::before, .ai-glow::after {
-  content: ""; position: absolute; width: 540px; height: 540px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(96,146,255,.38), transparent 62%);
-  will-change: transform;
-}
-.ai-glow::before { top: -180px; right: -100px; animation: glow-drift 18s ease-in-out infinite alternate; }
-.ai-glow::after  { bottom: -220px; left: -140px; animation: glow-drift 24s ease-in-out infinite alternate-reverse; }
-@keyframes glow-drift { to { transform: translate3d(-70px, 46px, 0) scale(1.18); } }
-
+/* ---------- AI section: shared ink, dot grid, HUD orb ---------- */
 /* the same dot grid used on the hero (.fx-dots) and contact (.contact-art),
-   retuned for the dark panel: light periwinkle dots at a low alpha so they
+   retuned for the dark band: light periwinkle dots at a low alpha so they
    stay quiet against the navy, with a soft radial mask that keeps them densest
    up-center and fades them out at the edges. Static, rasterized once. */
 .ai-bg {
@@ -656,18 +694,11 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
   mask-image: radial-gradient(150% 120% at 50% 38%, #000 55%, transparent 100%);
 }
 
-.ai-head { position: relative; display: grid; grid-template-columns: 1.15fr .85fr; gap: 44px; align-items: center; }
-@media (max-width: 880px) { .ai-head { grid-template-columns: 1fr; } .ai-panel { padding: 44px 26px 36px; } }
 .ai-title { color: #fff; margin-bottom: 14px; }
 .ai-accent { color: #8fb3ff; }
 .kicker-light { color: #aab8e0; }
 .kicker-light .kbar { background: #8fb3ff; }
 .ai-sub { color: rgba(223,229,244,.82); font-size: 17.5px; max-width: 54ch; }
-/* AI tool logos: monochrome marks in the panel ink, names via aria/title */
-.ai-logos { display: flex; align-items: center; flex-wrap: wrap; gap: 24px; margin-top: 24px; }
-.ai-logo { color: #9db9ff; opacity: .8; transition: opacity .2s ease, color .2s ease, transform .2s ease; }
-.ai-logo svg { display: block; width: 27px; height: 27px; }
-.ai-logo:hover { color: #ffffff; opacity: 1; transform: translateY(-2px); }
 
 /* HUD orb (SVG), blueprint-schematic style: a static drawing layer (dot grid,
    crosshairs, brackets, guide tracks, annotations) under rotating rings,
@@ -697,29 +728,7 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
   100% { transform: scale(1); opacity: 0; }
 }
 
-.ai-panel .ai-grid { margin-top: 42px; position: relative; }
-.ai-panel .ai-card { background: rgba(255,255,255,.05); border-color: rgba(255,255,255,.12); }
-.ai-panel .ai-card:hover { box-shadow: 0 24px 48px -20px rgba(0,0,0,.5); }
-.ai-panel .ai-card h3 { color: #fff; }
-.ai-panel .ai-card p { color: rgba(223,229,244,.76); }
-.ai-panel .ai-num { color: #8fb3ff; }
-
-.ai-icon {
-  width: 40px; height: 40px; border-radius: 11px; display: inline-flex;
-  align-items: center; justify-content: center; color: #9db9ff;
-  background: rgba(143,179,255,.12); border: 1px solid rgba(143,179,255,.28);
-  box-shadow: 0 0 18px -6px rgba(120,165,255,.5);
-}
-.ai-icon svg { width: 20px; height: 20px; }
-
-/* script.js pauses the panel's ambient animation while it is offscreen */
-.ai-panel.paused .o-ring1, .ai-panel.paused .o-ring2, .ai-panel.paused .o-ring3,
-.ai-panel.paused .o-sweep, .ai-panel.paused .o-ticks, .ai-panel.paused .o-halo,
-.ai-panel.paused .o-ping, .ai-panel.paused .o-innerarc, .ai-panel.paused .o-coreglow,
-.ai-panel.paused .ai-glow::before, .ai-panel.paused .ai-glow::after { animation-play-state: paused; }
-
 @media (prefers-reduced-motion: reduce) {
-  .ai-glow::before, .ai-glow::after,
   .o-ring1, .o-ring2, .o-ring3, .o-sweep,
   .o-ticks, .o-halo, .o-ping, .o-innerarc, .o-coreglow { animation: none; }
 }
@@ -1059,42 +1068,185 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
 }
 .case2-statement .accent { color: var(--accent); }
 .case2-sub { margin-top: 14px; font-size: 17px; line-height: 1.68; color: var(--body); }
+/* full-bleed tinted band, square corners. Deliberately NOT a rounded card:
+   a rounded panel stacked inside the browser window and around an already
+   rounded screenshot read as three nested boxes. The tint is a background
+   the screenshot sits on, so only the screenshot carries a frame. */
 .case2-imgband {
-  width: min(94vw, 1400px); margin: 46px auto 0;
-  border-radius: 24px; padding: clamp(22px, 4.5vw, 60px);
+  width: 100%; margin: 46px auto 0;
+  border-radius: 0; padding: clamp(22px, 4.5vw, 60px);
   display: flex; justify-content: center;
 }
 .case2-imgband img {
   width: 100%; max-width: 1060px; height: auto; display: block;
   border-radius: 14px; box-shadow: 0 24px 48px -20px rgba(14, 27, 44, .22);
 }
-.case2-next {
-  display: block; overflow: hidden; margin-top: 96px; padding: 30px 0 38px;
-  text-decoration: none; border-top: 1px solid var(--line);
+/* optional zoom affordance: wrap an imgband image in <a href="the same asset">
+   so dense artifacts (research diagrams, full screens) can be opened at full
+   size — essential on phones, where a 307px-wide band can't carry fine detail. */
+.case2-imgband a { display: block; width: 100%; max-width: 1060px; cursor: zoom-in; text-decoration: none; }
+.case2-imgband a img { max-width: 100%; }
+/* --- case-v2 GALLERY: several screens in one band, auto-advancing ---------
+   Use when the screens are variations of ONE idea (the same system on different
+   surfaces). When each image makes a different argument, give it its own band —
+   a carousel hides content, and on a portfolio an unseen screen is a wasted one.
+   That's why the dots, arrows and "n / total" count are always present: they
+   have to advertise that more exists.
+   Navigation is dots / arrows / swipe ONLY, never a click on the image — the
+   image keeps its tap-to-enlarge <a>. */
+.case2-gallery { display: block; position: relative; }
+/* Clip HORIZONTALLY only: the clip exists to hide the adjacent slides, which
+   sit entirely to the sides — vertically there is nothing to hide, and a plain
+   overflow:hidden was cutting off the slide image's drop shadow (it extends
+   ~52px below the image). `hidden` first is the fallback for engines without
+   overflow:clip; on modern ones x:clip + y:visible is a valid pair. */
+.c2g-viewport { overflow: hidden; overflow-x: clip; overflow-y: visible; }
+/* script.js sets the viewport's height to the ACTIVE slide's height — slides
+   differ in height, and without this the track holds the tallest slide's box,
+   leaving a dead gap between a shorter image and the dots. */
+.c2g-viewport { transition: height .55s cubic-bezier(.22, .61, .36, 1); }
+.c2g-track {
+  display: flex; list-style: none; margin: 0; padding: 0;
+  transition: transform .72s cubic-bezier(.22, .61, .36, 1);
 }
-.case2-next-track { display: flex; width: max-content; animation: h2scroll 34s linear infinite; }
-.case2-next-track ul { display: flex; list-style: none; margin: 0; padding: 0; }
-.case2-next-track li {
-  white-space: nowrap; padding-left: .45em;
-  font-size: clamp(54px, 8.5vw, 104px); font-weight: 600; line-height: 1.25;
-  letter-spacing: -0.03em;
-  color: color-mix(in srgb, var(--ink) 12%, transparent);
-  transition: color .35s ease;
+.c2g-slide {
+  flex: 0 0 100%; display: flex; justify-content: center;
+  /* the outgoing slide drops back and dims while the incoming one rises into
+     place, so the change reads as depth rather than a flat filmstrip push */
+  opacity: .22; transform: scale(.92) translateY(22px);
+  transition: opacity .6s ease, transform .8s cubic-bezier(.22, .61, .36, 1);
 }
-.case2-next:hover .case2-next-track li { color: color-mix(in srgb, var(--accent) 55%, transparent); }
-.case2-next:hover .case2-next-track { animation-play-state: paused; }
+.c2g-slide.is-active { opacity: 1; transform: none; }
+
+/* scope line above a .m-band, when the tiles span wider work than the case itself */
+.m-scope {
+  margin: 44px 0 11px; font-size: 12px; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--mute);
+}
+
+.c2g-bar { display: flex; align-items: center; justify-content: center; margin-top: 26px; }
+.c2g-dots { display: flex; align-items: center; gap: 8px; }
+
+/* The active dot stretches into a bar and its accent fill sweeps across over
+   the slide's dwell — a visible countdown to the next slide. When the next dot
+   takes over it becomes the bar and starts its own sweep; this one shrinks back
+   to a dot. Duration comes from --c2g-dwell, which script.js sets per slide
+   (longer after a manual move), and .is-paused freezes the sweep in place. */
+.c2g-dot {
+  position: relative; overflow: hidden;
+  width: 8px; height: 8px; padding: 0; border: 0; border-radius: 999px; cursor: pointer;
+  background: color-mix(in srgb, var(--ink) 30%, transparent);
+  transition: width .5s cubic-bezier(.22, .61, .36, 1), background .35s ease;
+}
+.c2g-dot:hover { background: color-mix(in srgb, var(--ink) 50%, transparent); }
+.c2g-dot.is-active { width: 34px; background: color-mix(in srgb, var(--ink) 22%, transparent); }
+.c2g-fill {
+  position: absolute; inset: 0; border-radius: inherit;
+  background: var(--accent);
+  transform: scaleX(0); transform-origin: left center;
+}
+.c2g-dot.is-active .c2g-fill { animation: c2gfill var(--c2g-dwell, 5500ms) linear forwards; }
+.case2-gallery.is-paused .c2g-fill { animation-play-state: paused; }
+@keyframes c2gfill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+/* arrows live in the band's side padding, clear of the 1060px image, so they
+   never sit on top of a screenshot. Below 1100px there's no room — swipe + dots
+   take over and the arrows are hidden. */
+.c2g-arrow {
+  position: absolute; top: 50%; margin-top: -23px; z-index: 2;
+  width: 46px; height: 46px; border-radius: 50%; border: 0; cursor: pointer;
+  display: none; place-items: center; color: var(--ink);
+  background: color-mix(in srgb, #fff 88%, transparent);
+  box-shadow: 0 10px 26px -12px rgba(14, 27, 44, .4);
+  transition: background .3s ease, transform .3s ease;
+}
+.c2g-arrow:hover { background: #fff; transform: scale(1.08); }
+.c2g-arrow svg { width: 19px; height: 19px; }
+.c2g-prev { left: clamp(8px, 2.4vw, 30px); }
+.c2g-next { right: clamp(8px, 2.4vw, 30px); }
+@media (min-width: 1100px) { .c2g-arrow { display: grid; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .c2g-track { transition: none; }
+  .c2g-viewport { transition: none; }
+  .c2g-slide { transition: none; opacity: 1; transform: none; }
+  .c2g-dot { transition: none; }
+  /* nothing auto-advances here, so the bar has no countdown to show — it just
+     marks the current slide */
+  .c2g-dot.is-active .c2g-fill { animation: none; transform: scaleX(1); }
+}
+
+/* --- .c2next: the next-project banner --------------------------------------
+   Replaces the giant marquee that used to scroll the words "Next Project —
+   Rogers ·" across the bottom of every case. It looked good and nobody could
+   tell it was a link: no thumbnail, no button, no border, just drifting type at
+   12% ink. This says what it is, shows where it goes, and looks pressable —
+   poster, label, title, and a filled arrow that moves under the cursor.
+
+   Thumbnails are `next-<slug>.webp`, built by ../next_thumbs.py: an 8:5 crop of
+   the same poster the homepage work card uses, so the promise here matches what
+   the visitor sees when they land. They are NOT the poster files themselves —
+   two of those are 700-950 KB Figma SVGs, absurd at 300px wide.
+
+   The whole banner is one <a>. Nothing inside may be a link (no nested
+   anchors); the "Next project" pill is a styled <span> — the label and the
+   arrow merged into one pressable-looking element (Temuri's spec 2026-07-31:
+   title + company as the text, label+arrow combined "somewhere on the card";
+   the old bare arrow circle floated meaninglessly beside the copy on phones). */
+.c2next {
+  display: grid; grid-template-columns: minmax(0, 300px) 1fr;
+  align-items: center; gap: clamp(20px, 3vw, 40px);
+  width: min(100% - 48px, 1060px); margin: 104px auto 0;
+  padding: clamp(16px, 2vw, 22px);
+  border-radius: 26px; background: var(--band);
+  text-decoration: none; color: inherit;
+  transition: transform .5s cubic-bezier(.2, .65, .25, 1),
+              box-shadow .5s cubic-bezier(.2, .65, .25, 1);
+}
+.c2next:hover { transform: translateY(-4px); box-shadow: 0 34px 60px -34px rgba(14, 27, 44, .38); }
+.c2next-media { overflow: hidden; border-radius: 16px; aspect-ratio: 8 / 5; background: #fff; }
+.c2next-media img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  transition: transform .7s cubic-bezier(.2, .65, .25, 1);
+}
+.c2next:hover .c2next-media img { transform: scale(1.06); }
+.c2next h2 {
+  margin: 0; font-size: clamp(19px, 2vw, 26px); line-height: 1.28;
+  letter-spacing: -0.02em; font-weight: 700; color: var(--ink); text-wrap: balance;
+}
+.c2next-meta { margin: 10px 0 0; font-size: 14px; color: var(--body); }
+.c2next-btn {
+  display: inline-flex; align-items: center; gap: 9px;
+  margin-top: 20px; padding: 12px 22px; border-radius: 999px;
+  background: var(--accent); color: #fff;
+  font-size: 14px; font-weight: 700; letter-spacing: .01em;
+  transition: background .35s ease;
+}
+.c2next-btn svg { width: 17px; height: 17px; transition: transform .45s cubic-bezier(.2, .65, .25, 1); }
+.c2next:hover .c2next-btn { background: color-mix(in srgb, var(--accent) 86%, var(--ink)); }
+.c2next:hover .c2next-btn svg { transform: translateX(4px); }
+@media (max-width: 820px) {
+  /* poster across the top, copy below, pill under the copy — no orphaned arrow */
+  .c2next { grid-template-columns: 1fr; gap: 18px; margin-top: 72px; }
+}
+@media (max-width: 560px) {
+  /* same rule as every other mobile CTA on the site: the button goes full width */
+  .c2next-btn { width: 100%; justify-content: center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .c2next, .c2next-media img, .c2next-btn, .c2next-btn svg { transition: none; }
+  .c2next:hover { transform: none; }
+  .c2next:hover .c2next-media img { transform: none; }
+  .c2next:hover .c2next-btn svg { transform: none; }
+}
 @media (max-width: 760px) {
   .case2-hero { padding-top: 60px; }
   .case2-chips { gap: 8px; }
   .case2-chip { font-size: 13px; padding: 7px 13px; }
   .case2-chip--year { margin-left: 0; }
   .case2-band { padding-top: 52px; }
-  .case2-imgband { width: calc(100% - 24px); border-radius: 18px; margin-top: 34px; }
+  .case2-imgband { width: 100%; border-radius: 0; margin-top: 34px; }
 }
-@media (prefers-reduced-motion: reduce) {
-  .case2-next-track { animation: none; }
-}
-
 /* --- mobile nav: slides away on scroll down, returns on scroll up (script.js) --- */
 @media (max-width: 760px) {
   .nav { transition: transform .32s cubic-bezier(.32, .72, .35, 1); }
@@ -1104,167 +1256,426 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
   .nav { transition: none; }
 }
 
-/* --- AI workflow v2 (light, console animation) — concept alongside #ai --- */
-.ai2 { padding: 110px 0 40px; }
-.ai2-head {
-  font-size: clamp(28px, 3.6vw, 44px); line-height: 1.18; letter-spacing: -0.025em;
-  font-weight: 700; color: var(--ink); max-width: 21ch; margin-top: 14px; text-wrap: balance;
-}
-.ai2-sub { margin-top: 14px; font-size: 17px; line-height: 1.6; color: var(--body); max-width: 58ch; }
-.ai2-panel {
-  margin-top: 40px; display: grid; grid-template-columns: 1.05fr 1fr; gap: 40px;
-  background: var(--surface); border: 1px solid var(--line); border-radius: 26px;
-  padding: clamp(24px, 3.4vw, 44px); align-items: center;
-}
-.ai2-console {
-  background: #0e1b31; border-radius: 16px; overflow: hidden;
-  box-shadow: 0 28px 56px -24px rgba(14, 27, 44, .45);
-  font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
-}
-.ai2-bar {
-  display: flex; align-items: center; gap: 7px; padding: 12px 16px;
-  background: rgba(255, 255, 255, .05); border-bottom: 1px solid rgba(255, 255, 255, .09);
-}
-.ai2-bar i { width: 11px; height: 11px; border-radius: 50%; background: rgba(255,255,255,.16); }
-.ai2-bar i:nth-child(1) { background: #e6604d; } .ai2-bar i:nth-child(2) { background: #eec22f; } .ai2-bar i:nth-child(3) { background: #5fc26a; }
-.ai2-bar em { margin-left: auto; font-style: normal; font-size: 11.5px; color: rgba(223, 229, 244, .45); letter-spacing: .04em; }
-.ai2-body { padding: 22px 22px 26px; min-height: 128px; }
-.ai2-line { font-size: 14.5px; line-height: 1.7; color: #e8eef9; word-break: break-word; }
-.ai2-ps { color: #8fb3ff; margin-right: 9px; font-weight: 700; }
-.ai2-caret {
-  display: inline-block; width: 8px; height: 1.05em; margin-left: 2px;
-  background: #8fb3ff; vertical-align: text-bottom;
-  animation: ai2blink 1.05s steps(1) infinite;
-}
-@keyframes ai2blink { 50% { opacity: 0; } }
-.ai2-out {
-  margin-top: 12px; font-size: 13.5px; line-height: 1.65; color: #7ce2a7;
-  opacity: 0; transform: translateY(4px);
-  transition: opacity .4s ease, transform .4s ease;
-}
-.ai2-out.show { opacity: 1; transform: none; }
-.ai2-points { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 20px; }
-.ai2-points li { display: flex; gap: 14px; align-items: flex-start; }
-.ai2-points p { font-size: 15.5px; line-height: 1.6; color: var(--body); }
-.ai2-points b { color: var(--ink); font-weight: 700; }
-.ai2-pic {
-  flex: 0 0 auto; width: 38px; height: 38px; border-radius: 11px;
-  display: inline-flex; align-items: center; justify-content: center;
-  color: var(--accent); background: color-mix(in srgb, var(--accent) 9%, transparent);
-  border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
-}
-.ai2-pic svg { width: 19px; height: 19px; }
-.ai2-tools { margin-top: 26px; display: flex; flex-wrap: wrap; gap: 10px; }
-.ai2-tool {
-  display: inline-flex; align-items: center; gap: 8px;
-  border: 1px solid var(--line); border-radius: 999px; padding: 8px 15px;
-  font-size: 13.5px; font-weight: 600; color: var(--body); background: var(--surface);
-}
-.ai2-tool svg { width: 15px; height: 15px; color: var(--mute); }
-@media (max-width: 900px) {
-  .ai2-panel { grid-template-columns: 1fr; gap: 28px; }
-}
-@media (max-width: 760px) {
-  .ai2 { padding-top: 72px; }
-  .ai2-body { min-height: 148px; }
-}
-
-/* --- AI workflow v3 (full dark band, console-dominant) --- */
-.ai3 {
-  position: relative; overflow: hidden;
-  background: #0d1830; padding: 104px 0 96px;
-}
-.ai3::before {
-  content: ""; position: absolute; inset: 0; pointer-events: none;
-  background:
-    radial-gradient(560px 320px at 18% 8%, rgba(110, 155, 255, .16), transparent 70%),
-    radial-gradient(640px 380px at 85% 92%, rgba(80, 120, 220, .13), transparent 72%);
-}
-.ai3 .wrap { position: relative; }
-.ai3-head {
-  color: #fff; font-size: clamp(30px, 3.9vw, 48px); line-height: 1.14;
-  letter-spacing: -0.026em; font-weight: 700; margin-top: 14px;
-  max-width: 24ch; text-wrap: balance;
-}
-.ai3-accent { color: #8fb3ff; }
-.ai3-console {
-  margin: 44px auto 0; max-width: 860px;
+/* ---------- the console: title bar, typed body, logo dock ---------- */
+.ai-console {
+  margin: 52px 0 0;
   background: #0a1224; border: 1px solid rgba(255, 255, 255, .09); border-radius: 18px;
   overflow: hidden;
   box-shadow: 0 44px 90px -42px rgba(0, 0, 0, .65), 0 0 90px -30px rgba(110, 155, 255, .28);
   font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
 }
-.ai3-bar {
+.ai-bar {
   display: flex; align-items: center; gap: 7px; padding: 13px 20px;
   background: rgba(255, 255, 255, .045); border-bottom: 1px solid rgba(255, 255, 255, .08);
 }
-.ai3-bar i { width: 11.5px; height: 11.5px; border-radius: 50%; }
-.ai3-bar i:nth-child(1) { background: #e6604d; } .ai3-bar i:nth-child(2) { background: #eec22f; } .ai3-bar i:nth-child(3) { background: #5fc26a; }
-.ai3-bar em { margin-left: auto; font-style: normal; font-size: 12px; color: rgba(223, 229, 244, .48); letter-spacing: .04em; }
-.ai3-bar em span { color: rgba(158, 186, 255, .85); }
-.ai3-body { padding: 28px 30px 24px; min-height: 178px; }
-.ai3-line { font-size: 16.5px; line-height: 1.75; color: #e8eef9; word-break: break-word; }
-.ai3-ps { color: #8fb3ff; margin-right: 10px; font-weight: 700; }
-.ai3-caret {
+.ai-bar i { width: 11.5px; height: 11.5px; border-radius: 50%; }
+.ai-bar i:nth-child(1) { background: #e6604d; } .ai-bar i:nth-child(2) { background: #eec22f; } .ai-bar i:nth-child(3) { background: #5fc26a; }
+.ai-bar em { margin-left: auto; font-style: normal; font-size: 12px; color: rgba(223, 229, 244, .48); letter-spacing: .04em; }
+.ai-bar em span { color: rgba(158, 186, 255, .85); }
+.ai-body { padding: 26px 30px 30px; min-height: 132px; }
+.ai-line { font-size: 16.5px; line-height: 1.75; color: #e8eef9; word-break: break-word; }
+.ai-ps { color: #8fb3ff; margin-right: 10px; font-weight: 700; }
+.ai-caret {
   display: inline-block; width: 9px; height: 1.05em; margin-left: 2px;
   background: #8fb3ff; vertical-align: text-bottom;
-  animation: ai2blink 1.05s steps(1) infinite;
+  animation: ai-blink 1.05s steps(1) infinite;
 }
-.ai3-out {
+@keyframes ai-blink { 50% { opacity: 0; } }
+.ai-out {
   margin-top: 14px; font-size: 14.5px; line-height: 1.7; color: #7ce2a7;
   opacity: 0; transform: translateY(4px);
   transition: opacity .4s ease, transform .4s ease;
 }
-.ai3-out.show { opacity: 1; transform: none; }
-.ai3-stack {
+.ai-out.show { opacity: 1; transform: none; }
+.ai-stack {
   border-top: 1px solid rgba(255, 255, 255, .07); padding: 12px 20px;
   display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px;
   font-size: 12px; letter-spacing: .02em;
 }
-.ai3-slabel { color: rgba(223, 229, 244, .4); }
-.ai3-sicon {
+.ai-slabel { color: rgba(223, 229, 244, .4); }
+.ai-sicon {
   display: inline-flex; align-items: center; gap: 7px;
   color: rgba(223, 229, 244, .72); opacity: .48;
   transition: opacity .45s ease, color .45s ease;
 }
-.ai3-sicon svg { width: 14px; height: 14px; flex: 0 0 auto; }
-.ai3-sicon.on { opacity: 1; color: #9db9ff; }
-.ai3-points {
-  list-style: none; margin: 44px auto 0; padding: 0; max-width: 1040px;
-  display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+.ai-sicon svg { width: 14px; height: 14px; flex: 0 0 auto; }
+.ai-sicon.on { opacity: 1; color: #9db9ff; }
+/* --- AI workflow v4 (hybrid: v1's title + HUD orb over v3's console) ---------
+   The v3 dark band and console are reused verbatim (.ai-console and friends);
+   this block only supplies the band itself and the head row. No cards below the
+   console — the console is the closing statement. */
+.ai {
+  position: relative; overflow: hidden;
+  /* the console is the last element and its own shadow reads as breathing room,
+     so the floor is shallower than the ceiling */
+  background: #0d1830; padding: 104px 0 84px;
 }
-.ai3-points li {
-  display: flex; align-items: center; gap: 12px;
-  padding: 15px 17px; border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, .1); background: rgba(255, 255, 255, .03);
-  color: rgba(223, 229, 244, .82); font-size: 14.5px; font-weight: 600; line-height: 1.35;
-  transition: border-color .45s ease, background .45s ease, color .45s ease, transform .45s ease;
+.ai::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(620px 360px at 14% 4%, rgba(110, 155, 255, .17), transparent 70%),
+    radial-gradient(680px 400px at 88% 96%, rgba(80, 120, 220, .14), transparent 72%);
 }
-.ai3-points li.on {
-  border-color: rgba(143, 179, 255, .55); background: rgba(143, 179, 255, .09);
-  color: #fff; transform: translateY(-3px);
+.ai .wrap { position: relative; }
+
+/* The orb as a background instrument, masked so it reads as depth behind the section
+   rather than a second object competing with the title. The console (opaque #0a1224)
+   crosses its lower half — that overlap is the point: it layers the band rather than
+   dividing it into a title zone and a console zone. */
+.ai-orb {
+  /* fully inside the band on all four sides — bled off an edge it reads as cut off */
+  position: absolute; top: 6px; right: 16px;
+  width: 520px; max-width: 42%; pointer-events: none;
+  opacity: .55;
+  /* fade ONLY the outermost ring, so the instrument still reads as one whole disc.
+     A tighter mask cropped it into loose arcs that looked like stray noise. */
+  -webkit-mask-image: radial-gradient(closest-side, #000 64%, transparent 100%);
+  mask-image: radial-gradient(closest-side, #000 64%, transparent 100%);
 }
-.ai3-pic {
-  flex: 0 0 auto; width: 36px; height: 36px; border-radius: 10px;
-  display: inline-flex; align-items: center; justify-content: center;
-  color: #9db9ff; background: rgba(143, 179, 255, .12);
-  border: 1px solid rgba(143, 179, 255, .28);
+.ai-orb .orb2 { width: 100%; margin: 0; }
+
+/* .ai-bg's base alpha (.06) is tuned for a lighter surface; on this flat #0d1830
+   band it is invisible, so the grid is nudged up just enough to register as texture. */
+.ai .ai-bg { background-image: radial-gradient(rgba(159, 179, 255, .09) 1px, transparent 1px); }
+
+/* one full-width column, so the head and the console share both edges. A two-column
+   head (copy + orb) breaks that alignment — hence the orb being a background layer. */
+.ai-head .ai-sub { max-width: 52ch; }
+/* ⚠️ The body's min-height CANNOT go to 0: the outcome line is emptied between
+   prompts, so without a floor the body shrinks and grows on every cycle. The values
+   here and at 760px are the TALLEST state (prompt + outcome) at each breakpoint,
+   measured across every phone width — so nothing ever reflows. */
+@media (max-width: 1100px) {
+  .ai-orb { top: 16px; right: 8px; width: 400px; opacity: .45; }
 }
-.ai3-pic svg { width: 18px; height: 18px; }
-@media (max-width: 1000px) {
-  .ai3-points { grid-template-columns: repeat(2, 1fr); }
+@media (max-width: 880px) {
+  .ai { padding: 76px 0 78px; }
+  /* behind body copy at phone widths the orb's rings sit under the text and hurt
+     contrast; the console carries the section here */
+  .ai-orb { display: none; }
+  .ai-console { margin-top: 34px; }
+  .ai-body { padding: 22px 20px 24px; }
 }
 @media (max-width: 760px) {
-  .ai3 { padding: 76px 0 70px; }
-  .ai3-body { min-height: 200px; padding: 22px 20px 20px; }
-  .ai3-line { font-size: 14.5px; }
-  .ai3-stack { font-size: 11px; gap: 8px 14px; }
+  /* Title bar drops to a bare "workflow.log". The rotating tool name pushed the bar
+     onto two lines on a phone, and it changed line count as the name changed — the
+     logo dock at the foot of the console already says which tools are in play, so the
+     name is redundant here. Desktop keeps it. */
+  .ai-bartool { display: none; }
+  /* ONE height for every prompt, sized to the WORST case, never to the common one.
+     Measured by cloning the body at each phone width and setting all four prompts:
+     at 320px "red-team this checkout…" wraps to THREE lines and needs 192px, while
+     360–430px need 167 — so the earlier 172px floor was correct at 375 and jumped on
+     a narrow phone. 212px reserves four prompt lines
+     plus two outcome lines, which also absorbs the transient extra line the caret
+     causes when it wraps past a full line mid-type. Deliberately taller than the
+     common case: blank space under the last output is what a real terminal looks
+     like, whereas a box that changes size every cycle reads as broken. */
+  .ai-body { min-height: 212px; }
 }
-@media (max-width: 560px) {
-  /* icon-only dock on small phones */
-  .ai3-sicon { font-size: 0; gap: 0; }
-  .ai3-sicon svg { width: 16px; height: 16px; }
+
+/* ambient orb motion idles while the band is offscreen (script.js) */
+.ai.paused .o-ring1, .ai.paused .o-ring2, .ai.paused .o-ring3,
+.ai.paused .o-sweep, .ai.paused .o-ticks, .ai.paused .o-halo,
+.ai.paused .o-ping, .ai.paused .o-innerarc,
+.ai.paused .o-coreglow { animation-play-state: paused; }
+
+/* A phone-width screen on a full-bleed band. Without this cap the band's
+   `width:100%; max-width:1060px` blows a 360px design up to 1060 — which, at
+   height:auto, renders it ~3400px tall. Capped near its natural width it reads
+   as a phone standing next to the desktop work, and the zoom <a> still opens it
+   full size for anyone who wants to read the detail. The width is set near
+   real-world scale: a 360px phone beside a 1440px desktop design, shown at a
+   band width of 1060, works out to ~265px. */
+.case2-imgband--phone a,
+.case2-imgband--phone img { max-width: 280px; }
+
+/* --- .case2-imgband--fit: size a raster screen to its OWN resolution --------
+   Some case images come from a source that cannot be re-exported any bigger —
+   the 2024 deck's embedded bitmaps (see ../rogers_assets.py), where the widest
+   OneView screen is 1768px. Stretched to the band's full 1060px those land at
+   1.3-1.7x on a retina screen and read as "low quality", but the pixels are
+   fine: the fault is the display size, not the file. Shrinking the frame is
+   the entire fix — the same bitmap at 2x looks sharp.
+
+   Caps the displayed width at three things at once, whichever is smallest:
+     1. HALF the native pixel width          -> never drops below 2x on retina
+     2. a viewport-height budget x aspect    -> the whole screen is visible at
+        once, instead of one figure outgrowing the window
+     3. the band's usual 1060px maximum
+   Declare the source's own numbers on the zoom <a> (both unitless, so calc()
+   can multiply them):
+       style="--iw: 1768; --ar: 1.263"        native width px; width / height
+   In a .case2-gallery the vars go on EACH slide's <a> — every slide has its own
+   resolution. Slides stay centred, so differing widths don't shift the band.
+
+   Mobile is untouched by design: at 375px the band is already ~331px wide, so a
+   deck bitmap runs at 4-5x there and none of these caps bind. The 68vh budget
+   leaves room for the band's own padding, so image + band still clear a 900px
+   window — and a short 1440x800 laptop simply gets a smaller, still-sharp
+   figure rather than a scroll.
+   NOTE: vector sources (the .svg exports on tbc/golance) must NOT use this —
+   they have no native resolution to honour and would only come out smaller. */
+.case2-imgband--fit a {
+  max-width: min(1060px, calc(var(--iw) * .5px), calc(68vh * var(--ar)));
 }
+
+/* --- .c2win: two framed viewports onto ONE long page -----------------------
+   A full-page export can carry two separate arguments 800px apart. Shipping it
+   twice, cropped two ways, ships the file twice — a Figma SVG is 700 KB+ over
+   the wire. Instead each band frames its own region of the SAME src, so the
+   browser downloads it once and caches it for the second band.
+
+   This is NOT the aspect-fit cropping the band rules forbid. There, an image is
+   squashed into a fixed box and loses its edges. Here the window IS the frame:
+   its region is shown whole, at full band width, uncropped left-to-right, and
+   the zoom <a> still opens the entire page.
+
+   --w/--h = the visible region's size in source px; --y = its top offset. The
+   image keeps its own aspect and is pushed up by a percentage of the window's
+   height, so the whole thing scales with the column. */
+.c2win {
+  display: block; /* it's a <span> inside the zoom <a> — an inline box has no size */
+  position: relative; width: 100%; overflow: hidden;
+  aspect-ratio: var(--w) / var(--h);
+  border-radius: 14px; box-shadow: 0 24px 48px -20px rgba(14, 27, 44, .22);
+}
+.c2win img {
+  position: absolute; left: 0; top: calc(-100% * var(--y) / var(--h));
+  width: 100%; height: auto; display: block;
+  border-radius: 0; box-shadow: none;
+}
+
+/* --- .c2mos: a photo mosaic, for the trip band ------------------------------
+   A carousel was wrong here. The gallery exists for screens that make the SAME
+   argument one at a time; these photos make one argument TOGETHER — I was in
+   the room, in that building, in that valley — and hiding three quarters of
+   that behind dots weakens it. A mosaic says it in a single glance.
+
+   The lead photo keeps height:auto, so the shot with people in it is never
+   cropped. Only the three supporting frames take object-fit:cover, which is the
+   deliberate exception to the band rule: that rule protects SCREENSHOTS, where
+   a cropped edge loses information, and a photograph trimmed to a common
+   rectangle loses nothing. Every frame still opens full-size via its own zoom
+   anchor, so the crop is presentational only.
+
+   Sizing note: the supporting frames render ~340px wide on desktop, so their
+   srcset `sizes` must say so — inheriting the band's 1060px would pull the
+   full-size file for a thumbnail and undo the responsive work. */
+/* 760px, not the band's usual 1060: these are photographs, not the work. Held
+   to the text column's width they read as a note in the margin of the story
+   rather than a showcase, which is the right hierarchy next to the product
+   screens — and the lead shot is a soft video still that falls apart when it is
+   enlarged past about 800px. */
+.c2mos { width: 100%; max-width: 760px; display: grid; gap: 12px;
+         grid-template-columns: repeat(3, 1fr); }
+.c2mos > a {
+  display: block; width: 100%; max-width: none; overflow: hidden;
+  border-radius: 14px; box-shadow: 0 24px 48px -20px rgba(14, 27, 44, .22);
+  cursor: zoom-in; text-decoration: none;
+}
+/* the frame carries the rounding and the shadow, so the image inside drops the
+   copies it inherits from .case2-imgband img */
+.c2mos > a > img {
+  display: block; width: 100%; height: 100%; max-width: none;
+  object-fit: cover; border-radius: 0; box-shadow: none;
+  transition: transform .7s cubic-bezier(.2, .65, .25, 1);
+}
+.c2mos > a:hover > img { transform: scale(1.035); }
+.c2mos-main { grid-column: 1 / -1; }
+.c2mos-main > img { height: auto; }            /* the lead photo is never cropped */
+.c2mos > a:not(.c2mos-main) { aspect-ratio: 3 / 2; }
+@media (max-width: 700px) {
+  .c2mos { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  /* An odd number of supporting frames leaves a hole in a 2-up grid, so the
+     last one spans instead of sitting beside empty space. The lead photo takes
+     a whole row by itself, so the supporting frames start at child 2 and a
+     lone last one always lands on an EVEN index (2, 4, 6...). */
+  .c2mos > a:last-child:nth-child(even) { grid-column: 1 / -1; aspect-ratio: 2 / 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .c2mos > a > img, .c2mos > a:hover > img { transition: none; transform: none; }
+}
+
+/* --- .c2vid: click-to-load video, no third party until asked ---------------
+   The band ships a static thumbnail and a play button. YouTube's player — its
+   script, its cookies — loads only when someone presses play, and the iframe
+   then replaces the button in place so playback starts exactly where the
+   thumbnail was. Embedding the iframe up front would load ~1 MB and set
+   third-party cookies on every visitor who never watches. */
+.case2-imgband--stack { flex-direction: column; align-items: center; }
+.c2vid { position: relative; width: 100%; max-width: 1060px; }
+.c2vid-btn {
+  display: block; position: relative; width: 100%; aspect-ratio: 16 / 9;
+  padding: 0; border: 0; background: none; cursor: pointer; overflow: hidden;
+  border-radius: 14px; box-shadow: 0 24px 48px -20px rgba(14, 27, 44, .22);
+}
+.c2vid-btn img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  border-radius: 0; box-shadow: none;
+  transition: transform .6s cubic-bezier(.22, .61, .36, 1);
+}
+.c2vid-btn:hover img, .c2vid-btn:focus-visible img { transform: scale(1.03); }
+/* GLASS play button. A solid white puck reads as a stock overlay dropped on the
+   image; this one is part of it — it refracts the poster behind it through
+   backdrop-filter, catches a light edge along its top, and sits inside a thin
+   halo that breathes outward on hover. Keep the two rings faint: the triangle,
+   not the chrome, has to stay the brightest thing in the circle. */
+.c2vid-play {
+  position: absolute; inset: 0; margin: auto;
+  width: 72px; height: 72px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: linear-gradient(150deg, rgba(255,255,255,.30), rgba(255,255,255,.10) 62%);
+  -webkit-backdrop-filter: blur(15px) saturate(175%);
+  backdrop-filter: blur(15px) saturate(175%);
+  border: 1px solid rgba(255, 255, 255, .40);
+  box-shadow:
+    inset 0 1.5px 0 rgba(255, 255, 255, .60),
+    inset 0 -18px 30px rgba(255, 255, 255, .05),
+    0 20px 48px -14px rgba(0, 0, 0, .60);
+  transition: transform .4s cubic-bezier(.22, .61, .36, 1),
+              background .35s ease, border-color .35s ease;
+}
+/* the halo — a second, wider ring that expands and fades as you approach */
+.c2vid-play::before {
+  content: ""; position: absolute; inset: -12px; border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, .20);
+  transition: transform .55s cubic-bezier(.22, .61, .36, 1), opacity .55s ease;
+}
+.c2vid-btn:hover .c2vid-play, .c2vid-btn:focus-visible .c2vid-play {
+  transform: scale(1.07);
+  background: linear-gradient(150deg, rgba(255,255,255,.42), rgba(255,255,255,.16) 62%);
+  border-color: rgba(255, 255, 255, .58);
+}
+.c2vid-btn:hover .c2vid-play::before, .c2vid-btn:focus-visible .c2vid-play::before {
+  transform: scale(1.14); opacity: .45;
+}
+/* NO margin nudge. The path is M8.5 5.8v12.4L19 12z in a 24x24 box: its
+   bounding box spans x 8.5-19, centred on 13.75 — already 1.75 units right of
+   the box centre — which puts its CENTROID (a triangle's centre of mass sits a
+   third of the way from base to apex, x=12) exactly on centre. The optical
+   correction is baked into the path. A margin-left on top applied it twice and
+   the triangle read as shoved right. */
+.c2vid-play svg {
+  width: 26px; height: 26px; fill: #fff;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, .45));
+}
+.c2vid-frame {
+  display: block; width: 100%; aspect-ratio: 16 / 9; border: 0;
+  border-radius: 14px; box-shadow: 0 24px 48px -20px rgba(14, 27, 44, .22);
+}
+.c2vid-note {
+  margin-top: 15px; text-align: center;
+  font-size: 13.5px; line-height: 1.6; color: var(--mute);
+}
+.c2vid-note a { color: var(--body); text-decoration: underline; text-underline-offset: 3px; }
 @media (max-width: 560px) {
-  .ai3-points { grid-template-columns: 1fr; gap: 12px; }
+  /* the glass puck is sized for a 1060px band; on a ~330px one it would eat a
+     third of the poster and sit on top of the headline. 60/62px keeps it a
+     comfortable tap target (>44px) at ~18-23% of the frame. */
+  .c2vid-play { width: 54px; height: 54px; }
+  .c2vid-play svg { width: 20px; height: 20px; }
+  .c2vid-play::before, .reel-play::before { inset: -9px; }
+  .reel-play { width: 54px; height: 54px; margin: -27px 0 0 -27px; }
+  .reel-play svg { width: 20px; height: 20px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .c2vid-btn img, .c2vid-play, .c2vid-play::before { transition: none; }
+  .c2vid-btn:hover img, .c2vid-btn:focus-visible img { transform: none; }
+  .c2vid-btn:hover .c2vid-play, .c2vid-btn:focus-visible .c2vid-play { transform: none; }
+  .c2vid-btn:hover .c2vid-play::before, .c2vid-btn:focus-visible .c2vid-play::before { transform: none; }
+}
+
+/* --- .c2quotes: recognition set in the page's own type ----------------------
+   This band used to be a screenshot of EPAM's recognition UI dropped onto the
+   tint: a white card, in someone else's typeface, and the only image on the
+   page that wasn't Temuri's own work. Only the medals survive as images
+   (transparent WebP, cut by medal() in novocure_assets.py) — the words are page
+   text now, so they set in Plus Jakarta Sans, wrap at any width, can be
+   selected and translated, and cost ~26 KB instead of 83.
+
+   Deliberately NOT a card. The quotes sit directly on the band's tint; a white
+   panel is what made the old version read as pasted on rather than part of the
+   page. The medal's transparent circle is doing the same job — on a card it
+   would have needed a white square behind it. */
+.c2quotes {
+  width: 100%; max-width: 1060px; margin: 0; padding: 0; list-style: none;
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(30px, 4vw, 56px);
+}
+.c2quote { display: grid; grid-template-columns: auto 1fr; gap: 22px; align-items: start; }
+/* .case2-imgband img (0,1,1) sets width:100% + a 14px radius + a shadow, and it
+   outranks a lone .c2quote-medal (0,1,0) — the medal rendered 200px wide on a
+   white rounded card. Qualify the selector and undo all three. */
+.c2quotes .c2quote-medal {
+  width: 74px; height: 74px; max-width: none; display: block;
+  border-radius: 0; box-shadow: none;   /* the alpha circle is the shape */
+}
+.c2quote blockquote {
+  margin: 0; font-size: clamp(16.5px, 1.4vw, 18.5px); line-height: 1.62;
+  font-weight: 500; /* a shade heavier than body copy — it is speech, not narration */
+  color: color-mix(in srgb, var(--ink) 86%, var(--body));
+}
+.c2quote-src {
+  margin: 12px 0 0; font-size: 12.5px; font-weight: 700;
+  letter-spacing: .08em; text-transform: uppercase;
+  color: color-mix(in srgb, var(--ink) 50%, transparent);
+}
+@media (max-width: 780px) {
+  .c2quotes { grid-template-columns: 1fr; }
+  .c2quote { gap: 18px; }
+  .c2quotes .c2quote-medal { width: 62px; height: 62px; }
+}
+
+/* --- .c2dev: one product, two breakpoints, ONE figure ----------------------
+   For when a desktop screen and its phone counterpart are the SAME screen. As
+   two separate bands they read as two unrelated images and the second one feels
+   redundant; composed together they read as one responsive product, which is an
+   argument neither makes alone.
+
+   The frames are deliberately minimal — a thin bezel, a laptop foot, no brand
+   marks and no photoreal chrome. This site's system is flat ink-on-linen, the
+   homepage hero already owns a literal Macintosh, and a glossy MacBook here
+   would add a third device language while spending pixels on decoration instead
+   of on the UI. The frame's only job is to say "same product, two sizes".
+
+   Both devices keep their own zoom <a>, so each screen still opens full size. */
+.c2dev { position: relative; width: 100%; max-width: 1060px; padding-bottom: 30px; }
+/* NB: no `width` here — .c2dev a (0,1,1) would outrank .c2dev-lap / .c2dev-phone
+   (0,1,0) and collapse both devices. Widths live on the compound selectors. */
+.c2dev a { display: block; max-width: none; cursor: zoom-in; text-decoration: none; }
+.c2dev img { width: 100%; max-width: none; height: auto; display: block; border-radius: 0; box-shadow: none; }
+.c2dev-screen {
+  display: block; overflow: hidden; background: #131c2e;
+  border: 9px solid #131c2e;
+}
+
+/* laptop: bezel + a shallow foot that widens past the lid, the two shapes that
+   read as "laptop" without drawing one */
+.c2dev .c2dev-lap { position: relative; width: 87%; }
+.c2dev-lap .c2dev-screen {
+  border-radius: 13px;
+  box-shadow: 0 34px 64px -26px rgba(14, 27, 44, .45);
+}
+.c2dev-lap::after {
+  content: ""; position: absolute; left: -6.5%; width: 113%; bottom: -13px; height: 13px;
+  background: linear-gradient(#dfe5ed, #c2ccda);
+  border-radius: 0 0 11px 11px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .85), 0 12px 20px -10px rgba(14, 27, 44, .35);
+}
+
+/* phone: overlaps the lid's bottom-right corner and hangs below the foot, the
+   standard way of saying "and it works here too" */
+.c2dev .c2dev-phone { position: absolute; right: 0; bottom: 0; width: 19.5%; z-index: 2; }
+.c2dev-phone .c2dev-screen {
+  border-width: 6px; border-radius: 26px;
+  box-shadow: 0 26px 44px -16px rgba(14, 27, 44, .55);
+}
+@media (max-width: 760px) {
+  /* a 19.5% phone on a ~330px band is 64px — unreadable. Give it more of the
+     frame and pull the lid in to keep the overlap. */
+  .c2dev .c2dev-lap { width: 80%; }
+  .c2dev .c2dev-phone { width: 26%; }
+  .c2dev-phone .c2dev-screen { border-width: 4px; border-radius: 17px; }
+  .c2dev-lap .c2dev-screen { border-width: 6px; border-radius: 9px; }
+  .c2dev-lap::after { height: 9px; bottom: -9px; }
 }
