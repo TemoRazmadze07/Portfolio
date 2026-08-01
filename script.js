@@ -425,15 +425,28 @@
   const CRUISE = 1.1, HOVER = 0.25;   // %/s — brisk drift, eases off while inspecting a card
 
   let base = 0, speed = CRUISE, targetSpeed = CRUISE;
-  arc.addEventListener("pointerover", (e) => { if (e.target.closest(".hero2-card")) targetSpeed = HOVER; });
-  arc.addEventListener("pointerout", (e) => { if (e.target.closest(".hero2-card")) targetSpeed = CRUISE; });
+  // real hover only: on touch, pointerout never fires after a tap, which would
+  // latch the drift at HOVER (0.25 %/s) for the rest of the session
+  if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+    arc.addEventListener("pointerover", (e) => { if (e.target.closest(".hero2-card")) targetSpeed = HOVER; });
+    arc.addEventListener("pointerout", (e) => { if (e.target.closest(".hero2-card")) targetSpeed = CRUISE; });
+  }
   const place = () => {
     for (let i = 0; i < n; i++) {
       const pos = ((base + i * SPACING) % CYCLE) - BUF;
       const card = cards[i];
-      if (pos < 0 || pos > 100) { card.style.opacity = "0"; continue; }
+      // the cards are links: fading one out is not enough, it has to stop
+      // hit-testing too. Off-stage cards keep their last offset-distance and
+      // park on the path's end points, which are on screen above ~1560px wide.
+      if (pos < 0 || pos > 100) {
+        card.style.opacity = "0";
+        card.style.pointerEvents = "none";
+        continue;
+      }
       card.style.offsetDistance = pos.toFixed(3) + "%";
-      card.style.opacity = Math.min(pos / FADE, (100 - pos) / FADE, 1).toFixed(3);
+      const op = Math.min(pos / FADE, (100 - pos) / FADE, 1);
+      card.style.opacity = op.toFixed(3);
+      card.style.pointerEvents = op > 0.4 ? "auto" : "none"; // no clicking a ghost mid-fade
     }
   };
   place();

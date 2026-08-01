@@ -26,7 +26,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=79">
+<link rel="stylesheet" href="styles.css?v=80">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="assets/favicon-16.png" sizes="16x16" type="image/png">
@@ -95,22 +95,30 @@ if ("scrollRestoration" in history) history.scrollRestoration = "manual";
       </div>
       <h1 class="hero2-intro">I’m Temuri Razmadze, senior product designer based in Wrocław, Poland</h1>
     </div>
-    <!-- project cards drifting along an arc (matmac-style). Placeholder arts for
-         now; to link a card later, wrap its img in <a href="tbc.html"> etc. -->
+    <!-- Project cards drifting along an arc (matmac-style). Real screens now,
+         built by ../hero_cards.py — each is the top-left of that product,
+         framed on its own identity band so the brand colour survives at 140px.
+         Every card links to its case page.
+         The arc is decorative chrome: the keyboard and screen-reader route to
+         the same four cases is the "Selected work" section below, so the whole
+         arc stays out of the accessibility tree (aria-hidden on the container)
+         and out of the tab order (tabindex="-1" on every card — that is what
+         keeps the container's aria-hidden legal). Same convention as the
+         .pcard.is-clone marquee cards further down. -->
     <div class="hero2-arc" aria-hidden="true">
       <div class="hero2-arc-track">
-        <div class="hero2-card"><img src="assets/ph-tbc.svg" alt="" loading="lazy"></div>
-        <div class="hero2-card"><img src="assets/ph-golance.svg" alt="" loading="lazy"></div>
-        <div class="hero2-card"><img src="assets/ph-novocure.svg" alt="" loading="lazy"></div>
-        <div class="hero2-card"><img src="assets/ph-rogers.svg" alt="" loading="lazy"></div>
-        <div class="hero2-card"><img src="assets/ph-tbc.svg" alt="" loading="lazy"></div>
-        <div class="hero2-card"><img src="assets/ph-golance.svg" alt="" loading="lazy"></div>
-        <div class="hero2-card"><img src="assets/ph-novocure.svg" alt="" loading="lazy"></div>
-        <div class="hero2-card"><img src="assets/ph-rogers.svg" alt="" loading="lazy"></div>
-        <div class="hero2-card"><img src="assets/ph-tbc.svg" alt="" loading="lazy"></div>
-        <div class="hero2-card"><img src="assets/ph-golance.svg" alt="" loading="lazy"></div>
-        <div class="hero2-card"><img src="assets/ph-novocure.svg" alt="" loading="lazy"></div>
-        <div class="hero2-card"><img src="assets/ph-rogers.svg" alt="" loading="lazy"></div>
+        <a class="hero2-card" href="tbc.html"      tabindex="-1"><img src="assets/hero-tbc.webp"      alt="" width="420" height="330" decoding="async" fetchpriority="low"></a>
+        <a class="hero2-card" href="golance.html"  tabindex="-1"><img src="assets/hero-golance.webp"  alt="" width="420" height="330" decoding="async" fetchpriority="low"></a>
+        <a class="hero2-card" href="novocure.html" tabindex="-1"><img src="assets/hero-novocure.webp" alt="" width="420" height="330" decoding="async" fetchpriority="low"></a>
+        <a class="hero2-card" href="rogers.html"   tabindex="-1"><img src="assets/hero-rogers.webp"   alt="" width="420" height="330" decoding="async" fetchpriority="low"></a>
+        <a class="hero2-card" href="tbc.html"      tabindex="-1"><img src="assets/hero-tbc.webp"      alt="" width="420" height="330" decoding="async" fetchpriority="low"></a>
+        <a class="hero2-card" href="golance.html"  tabindex="-1"><img src="assets/hero-golance.webp"  alt="" width="420" height="330" decoding="async" fetchpriority="low"></a>
+        <a class="hero2-card" href="novocure.html" tabindex="-1"><img src="assets/hero-novocure.webp" alt="" width="420" height="330" decoding="async" fetchpriority="low"></a>
+        <a class="hero2-card" href="rogers.html"   tabindex="-1"><img src="assets/hero-rogers.webp"   alt="" width="420" height="330" decoding="async" fetchpriority="low"></a>
+        <a class="hero2-card" href="tbc.html"      tabindex="-1"><img src="assets/hero-tbc.webp"      alt="" width="420" height="330" decoding="async" fetchpriority="low"></a>
+        <a class="hero2-card" href="golance.html"  tabindex="-1"><img src="assets/hero-golance.webp"  alt="" width="420" height="330" decoding="async" fetchpriority="low"></a>
+        <a class="hero2-card" href="novocure.html" tabindex="-1"><img src="assets/hero-novocure.webp" alt="" width="420" height="330" decoding="async" fetchpriority="low"></a>
+        <a class="hero2-card" href="rogers.html"   tabindex="-1"><img src="assets/hero-rogers.webp"   alt="" width="420" height="330" decoding="async" fetchpriority="low"></a>
       </div>
     </div>
   </section>
@@ -799,6 +807,6 @@ if ("scrollRestoration" in history) history.scrollRestoration = "manual";
   </div>
 </footer>
 
-<script src="script.js?v=79"></script>
+<script src="script.js?v=80"></script>
 </body>
 </html>

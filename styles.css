@@ -1008,20 +1008,36 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
   width: 1730px; height: 130px;
   transform: translateX(-50%);
   pointer-events: none;
-  opacity: 0; animation: h2fade .9s ease 1.35s forwards;
+  /* hidden, not merely transparent: an opacity-0 element still hit-tests, and
+     the cards are links now — without this the whole 1730px band is clickable
+     while invisible, for the 1.35s before the entrance runs. Own keyframe
+     because h2fade is shared with the marquee and the hello dot. */
+  visibility: hidden;
+  opacity: 0; animation: h2arcin .9s ease 1.35s forwards;
 }
+@keyframes h2arcin { from { opacity: 0; visibility: visible; } to { opacity: 1; visibility: visible; } }
 .hero2-arc-track { position: relative; width: 100%; height: 100%; }
 .hero2-card {
   position: absolute; top: 0; left: 0;
+  display: block;
   width: 140px; height: 110px;
-  pointer-events: auto;
+  /* script.js turns this on only while a card is on-stage AND legible. Cards
+     that drift off keep their last offset-distance and park on the path's end
+     points, which sit inside the viewport above ~1560px wide — as links they
+     would be invisible click traps. */
+  pointer-events: none;
+  -webkit-tap-highlight-color: transparent;
   border-radius: 14px; overflow: hidden;
   background: var(--surface);
   box-shadow: 0 25px 50px -12px rgba(14, 27, 44, .28);
   transition: transform .3s ease;
   opacity: 0; /* script.js drives per-card offset-distance + opacity */
 }
-.hero2-card:hover { transform: scale(1.35); z-index: 50; }
+/* fine pointers only — on touch :hover sticks after a tap, which would leave a
+   tapped card stuck at 1.35 and latch the drift at HOVER for the whole session */
+@media (hover: hover) and (pointer: fine) {
+  .hero2-card:hover { transform: scale(1.35); z-index: 50; }
+}
 .hero2-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 @media (max-width: 760px) {
@@ -1033,13 +1049,19 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
   .hero2-stage { margin-top: 20px; }
   .hero2-mac { --macScale: .9; transform-origin: 50% 100%; }
   .hero2-marquee { top: 180px; } /* visual mac center with .9 scale, bottom origin */
-  .hero2-arc { top: calc(100% - 190px); }
+  /* was `top: calc(100% - 190px)`, which drove the cards straight across the
+     second line of the H1 — measured at 1440x680: five fully opaque cards over
+     the headline box, 28 of 54 sample points hitting a card instead of the
+     heading. Harmless-looking while they were inert divs; a click trap on the
+     headline once they became links. Pin the arc to the hero floor instead. */
+  .hero2-arc { top: auto; bottom: 10px; transform: translateX(-50%) scale(.85); transform-origin: 50% 100%; }
 }
 @media (max-height: 599px) {
   .hero2-arc { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .hero2-arc { opacity: 1; animation: none; }
+  /* visibility has to be restored here too, or the arc never appears at all */
+  .hero2-arc { opacity: 1; visibility: visible; animation: none; }
 }
 
 /* --- case v2 (band rhythm — pilot on golance.html) ---
