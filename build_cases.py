@@ -13,7 +13,7 @@ list is what documents the "next case study" ring (rogers → tbc → golance �
 novocure → rogers). If a fifth case is ever added from scratch, generating it
 here first and then graduating it is still the cheapest path.
 """
-V = "80"  # cache-bust version, keep in sync with index.html
+V = "84"  # cache-bust version, keep in sync with index.html
 
 CASES = [
  dict(

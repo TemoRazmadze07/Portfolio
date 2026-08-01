@@ -163,6 +163,7 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
 .lg-tbc { width: 92px; height: 25px; }
 .lg-gpi { width: 82px; height: 24px; }
 .lg-fido { width: 74px; height: 25px; }
+.lg-adnoc { width: 107px; height: 24px; }
 @keyframes marquee { to { transform: translateX(-25%); } }
 
 /* ---------- showreel: featured project film ---------- */
@@ -372,8 +373,10 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
 .work-marquee {
   /* extra bottom room so the project cards' (large) hover shadow isn't clipped */
   overflow: hidden; padding: 18px 0 52px;
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+  /* No edge fade, unlike the other marquees: those hold light content, where a
+     fade melts into the page. These posters are dark — any fade to the light
+     background reads as a smear painted over the card, so the viewport edge
+     cuts them clean instead (Horizon-style). */
 }
 .work-track { display: flex; width: max-content; animation: work-scroll 48s linear infinite; }
 .work-marquee:hover .work-track { animation-play-state: paused; }
@@ -1700,4 +1703,53 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
   .c2dev-phone .c2dev-screen { border-width: 4px; border-radius: 17px; }
   .c2dev-lap .c2dev-screen { border-width: 6px; border-radius: 9px; }
   .c2dev-lap::after { height: 9px; bottom: -9px; }
+}
+
+/* --- .c2trio: three screens, one product, ONE band --------------------------
+   The Novocure cover. Its three core surfaces used to rotate in a gallery,
+   which meant two of them were always hidden behind dots — and each screen,
+   stretched to the band's full 1060px, put dense clinical UI at a size where
+   its type read as soft. Composed as a product trio the screens land together
+   in one glance, and each renders SMALLER than its source, so they read sharp.
+
+   Same minimal frame language as .c2dev above (thin bezel + foot, no photoreal
+   chrome — the reasoning there applies here doubly, with three devices).
+   The lead surface sits front and centre; the two supporting ones sit behind
+   it, raised, partly overlapped — hierarchy, not a filmstrip.
+
+   Every screen is WINDOWED to 16:10 from the top (a laptop's own shape;
+   headers carry these UIs' identity, so the bottom is what the crop spends).
+   Each laptop keeps its own zoom <a> to the FULL uncropped screen — same
+   contract as .c2win: the crop is presentational only. */
+.c2trio { position: relative; width: 100%; max-width: 1060px; padding-bottom: 13px; }
+.c2trio a { display: block; max-width: none; cursor: zoom-in; text-decoration: none; }
+.c2trio img { width: 100%; max-width: none; height: auto; display: block; border-radius: 0; box-shadow: none; }
+.c2trio .c2dev-screen { aspect-ratio: 16 / 10; }
+/* same trap as .c2dev (see its NB): .case2-imgband a (0,1,1) sets width:100%
+   and outranks a lone class (0,1,0) — the widths must live on compounds */
+.c2trio .c2trio-main { position: relative; width: 54%; margin: 0 auto; z-index: 3; }
+.c2trio .c2trio-side { position: absolute; bottom: 12%; width: 38%; z-index: 1; }
+.c2trio .c2trio-left { left: 0; }
+.c2trio .c2trio-right { right: 0; }
+/* the supporting laptops are further from the "camera": a tighter, dimmer
+   shadow keeps them planted without competing with the lead's */
+.c2trio-side .c2dev-screen { box-shadow: 0 22px 40px -22px rgba(14, 27, 44, .38); }
+/* .c2trio--cards — the SHIPPED variant (Temuri's pick, 2026-08-01): only the
+   LEAD gets a laptop; the sides are plain rounded screens (the band's own
+   screenshot language, .case2-imgband img). One device says "the product",
+   the flat cards say "and there is more of it" without three bezels
+   competing. Dropping the class brings the three-laptop version back. */
+.c2trio--cards .c2trio-side .c2dev-screen {
+  border: 0; background: transparent; border-radius: 14px;
+  box-shadow: 0 20px 42px -20px rgba(14, 27, 44, .30);
+}
+.c2trio--cards .c2trio-side.c2dev-lap::after { display: none; }
+@media (max-width: 760px) {
+  /* same trim as .c2dev at phone size; the sides give the lead a little more
+     of the band, and every screen still opens full size via its zoom <a> */
+  .c2trio .c2trio-main { width: 60%; }
+  .c2trio .c2trio-side { width: 34%; }
+  .c2trio .c2dev-screen { border-width: 5px; border-radius: 8px; }
+  .c2trio .c2dev-lap::after { height: 8px; bottom: -8px; border-radius: 0 0 8px 8px; }
+  .c2trio { padding-bottom: 8px; }
 }

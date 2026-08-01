@@ -31,7 +31,13 @@
     carry the screens as lossless PNG) and, for the one page not re-exported,
     the deck PDF itself, where the same bitmaps are lossy JPEG-2000. Same
     dimensions either way — the SVG ones just have no compression artifacts.
-      COVER GALLERY  novocure-dashboard.webp  HCP dashboard + patient search
+      COVER TRIO ... one composed band (.c2trio c2trio--cards): the dashboard
+                     in the lead laptop, the two supporting screens as flat
+                     rounded cards behind it (Temuri picked cards over three
+                     laptops, 2026-08-01) — was a 3-slide gallery before that;
+                     the carousel hid two screens behind dots and showed each
+                     at full band width, where their dense UI read as soft
+                     novocure-dashboard.webp  HCP dashboard + patient search
                      novocure-neworder.webp   Start a new order, 4-step wizard
                      novocure-patients.webp   My patients + open items — CROPPED
                        out of the full-page capture, not the small standalone
@@ -115,7 +121,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=80">
+<link rel="stylesheet" href="styles.css?v=84">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="assets/favicon-16.png" sizes="16x16" type="image/png">
@@ -153,25 +159,24 @@
     </div>
   </section>
 
-  <!-- COVER · a gallery rather than a single screen: the portal's three core
-       surfaces all make the same point (this is what shipped), and opening with
-       them beats holding two of them back for bands further down. -->
-  <figure class="case2-imgband case2-gallery tint-sand reveal" role="group" aria-roledescription="carousel" aria-label="The MyNovocure HCP portal">
-    <div class="c2g-viewport">
-      <ul class="c2g-track">
-        <li class="c2g-slide is-active"><a href="assets/novocure-dashboard.webp" target="_blank" rel="noopener" aria-label="Open the portal dashboard at full size"><img src="assets/novocure-dashboard.webp" srcset="assets/novocure-dashboard-800.webp 800w, assets/novocure-dashboard-1600.webp 1600w, assets/novocure-dashboard.webp 2050w" sizes="(max-width: 488px) calc(100vw - 44px), (max-width: 1165px) 91vw, 1060px" alt="The MyNovocure dashboard for a clinic — a patient search open over the page listing matches with their treatment status and date of birth, tiles counting documents to sign, expiring prescriptions, new usage reports and open items, and a “My patients” table filterable by treatment status underneath."></a></li>
-        <li class="c2g-slide"><a href="assets/novocure-neworder.webp" target="_blank" rel="noopener" aria-label="Open the new-order flow at full size"><img src="assets/novocure-neworder.webp" srcset="assets/novocure-neworder-800.webp 800w, assets/novocure-neworder-1600.webp 1600w, assets/novocure-neworder.webp 2120w" sizes="(max-width: 488px) calc(100vw - 44px), (max-width: 1165px) 91vw, 1060px" alt="“Start a new order” — a four-step wizard running create patient, order details, insurance, then patient information and authorization, with the patient information form open on the first step." loading="lazy"></a></li>
-        <li class="c2g-slide"><a href="assets/novocure-patients.webp" target="_blank" rel="noopener" aria-label="Open the patient list at full size"><img src="assets/novocure-patients.webp" srcset="assets/novocure-patients-800.webp 800w, assets/novocure-patients-1600.webp 1600w, assets/novocure-patients.webp 2048w" sizes="(max-width: 488px) calc(100vw - 44px), (max-width: 1165px) 91vw, 1060px" alt="The “My patients” list — sortable rows carrying each patient's dates, average device usage and a treatment-status pill (on treatment, pending start, off treatment, closed never started), an open-items count flagged when something needs attention, and a row expanded to show its outstanding items." loading="lazy"></a></li>
-      </ul>
-    </div>
-    <button class="c2g-arrow c2g-prev" type="button" aria-label="Previous screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18 9 12l6-6"/></svg></button>
-    <button class="c2g-arrow c2g-next" type="button" aria-label="Next screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
-    <div class="c2g-bar">
-      <div class="c2g-dots" role="tablist" aria-label="Choose a screen">
-        <button class="c2g-dot is-active" type="button" role="tab" aria-selected="true" aria-label="Dashboard"><i class="c2g-fill" aria-hidden="true"></i></button>
-        <button class="c2g-dot" type="button" role="tab" aria-selected="false" aria-label="New order"><i class="c2g-fill" aria-hidden="true"></i></button>
-        <button class="c2g-dot" type="button" role="tab" aria-selected="false" aria-label="Patient list"><i class="c2g-fill" aria-hidden="true"></i></button>
-      </div>
+  <!-- COVER · the portal's three core surfaces in ONE composed shot (.c2trio —
+       see styles.css). They rotated in a gallery before, which hid two behind
+       dots and showed each screen at a size where its dense UI read as soft;
+       as a trio they land together, smaller and sharper. The dashboard leads
+       in the one laptop frame; ordering and the patient list support as flat
+       cards behind it (--cards variant). Each screen opens its full
+       uncropped capture. -->
+  <figure class="case2-imgband tint-sand reveal">
+    <div class="c2trio c2trio--cards" role="group" aria-label="The MyNovocure HCP portal — its three core screens">
+      <a class="c2trio-side c2trio-left c2dev-lap" href="assets/novocure-neworder.webp" target="_blank" rel="noopener" aria-label="Open the new-order flow at full size">
+        <span class="c2dev-screen"><img src="assets/novocure-neworder-800.webp" srcset="assets/novocure-neworder-800.webp 800w, assets/novocure-neworder-1600.webp 1600w, assets/novocure-neworder.webp 2120w" sizes="(max-width: 488px) 34vw, (max-width: 1165px) 35vw, 403px" alt="“Start a new order” — a four-step wizard running create patient, order details, insurance, then patient information and authorization, with the patient information form open on the first step."></span>
+      </a>
+      <a class="c2trio-main c2dev-lap" href="assets/novocure-dashboard.webp" target="_blank" rel="noopener" aria-label="Open the portal dashboard at full size">
+        <span class="c2dev-screen"><img src="assets/novocure-dashboard-800.webp" srcset="assets/novocure-dashboard-800.webp 800w, assets/novocure-dashboard-1600.webp 1600w, assets/novocure-dashboard.webp 2050w" sizes="(max-width: 488px) 60vw, (max-width: 1165px) 49vw, 573px" alt="The MyNovocure dashboard for a clinic — a patient search open over the page listing matches with their treatment status and date of birth, tiles counting documents to sign, expiring prescriptions, new usage reports and open items, and a “My patients” table filterable by treatment status underneath."></span>
+      </a>
+      <a class="c2trio-side c2trio-right c2dev-lap" href="assets/novocure-patients.webp" target="_blank" rel="noopener" aria-label="Open the patient list at full size">
+        <span class="c2dev-screen"><img src="assets/novocure-patients-800.webp" srcset="assets/novocure-patients-800.webp 800w, assets/novocure-patients-1600.webp 1600w, assets/novocure-patients.webp 2048w" sizes="(max-width: 488px) 34vw, (max-width: 1165px) 35vw, 403px" alt="The “My patients” list — sortable rows carrying each patient's dates, average device usage and a treatment-status pill (on treatment, pending start, off treatment, closed never started), an open-items count flagged when something needs attention, and a row expanded to show its outstanding items."></span>
+      </a>
     </div>
   </figure>
 
