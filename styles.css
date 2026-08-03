@@ -163,7 +163,10 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
 .lg-tbc { width: 92px; height: 25px; }
 .lg-gpi { width: 82px; height: 24px; }
 .lg-fido { width: 74px; height: 25px; }
-.lg-adnoc { width: 107px; height: 24px; }
+/* ADNOC is the Latin wordmark only. ADNOC's official lockups all carry the Arabic أدنوك
+   and set the falcon panel on the RIGHT (Arabic is RTL); the solid panel also cannot be
+   tinted flat grey here without reading as a filled slab. Sized to match ROGERS/GPI caps. */
+.lg-adnoc { width: 81px; height: 17px; }
 @keyframes marquee { to { transform: translateX(-25%); } }
 
 /* ---------- showreel: featured project film ---------- */
