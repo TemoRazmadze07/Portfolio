@@ -478,17 +478,21 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
 .pcard-go svg { width: 15px; height: 15px; }
 
 @media (max-width: 880px) {
-  /* 456, not 432: Rogers' description wraps ~2 lines longer than the others at
-     276px, so .pcard-top runs 232px and the 176px screen no longer cleared the
-     card's floor — it overflowed by 20px and got clipped by .pcard's own
-     overflow:hidden. 452 is the exact minimum; 456 keeps ~20px between the
-     chips and the screen. Sized from the LONGEST card, not a sampled one. */
-  .pcard { width: 276px; height: 456px; margin-right: 16px; }
+  .pcard { width: 276px; height: 432px; margin-right: 16px; }
   .pcard-logo img { height: 23px; }
   .pcard.tint-green .pcard-logo img { height: 21px; }
   .pcard.tint-sand  .pcard-logo img { height: 17px; }
   .pcard.tint-rose  .pcard-logo img { height: 19px; }
   .pcard-desc { font-size: 14px; }
+  /* CHIPS MUST STAY ON ONE ROW HERE. There are only 222px of usable width and
+     the card's fixed height has no room for a second row: at the desktop size
+     Rogers' two chips measured 234px, wrapped, pushed .pcard-top to 232px and
+     drove the screen 20px through the card's floor, where overflow:hidden
+     sliced the bottom off the thumbnail. At 10.5px/8px Rogers clears by 12.6px
+     and goLance — the next tightest, and previously clearing by just 1.7px —
+     by 25.4px. Re-measure this if any chip copy gets longer. */
+  .pcard-chips { gap: 6px; }
+  .pcard-chips li { font-size: 10.5px; padding: 5px 8px; }
   /* inset stays --pcard-pad here too: .pcard-top keeps its 26px at this
      breakpoint, so the screen has to hold the same line to stay aligned. */
   .pcard-screen { height: 176px; }
