@@ -13,7 +13,7 @@ list is what documents the "next case study" ring (rogers → tbc → golance �
 novocure → rogers). If a fifth case is ever added from scratch, generating it
 here first and then graduating it is still the cheapest path.
 """
-V = "85"  # cache-bust version, keep in sync with index.html
+V = "86"  # cache-bust version, keep in sync with index.html
 
 CASES = [
  dict(
@@ -114,24 +114,24 @@ HEAD = """<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{title} — Temuri Razmadze</title>
+<title>{title} — Temo Razmadze</title>
 <meta name="description" content="Case study: {kicker}. {tiles_line}">
-<link rel="canonical" href="https://temorazmadze07.github.io/Portfolio/{slug}.html">
+<link rel="canonical" href="https://temorazmadze.com/{slug}.html">
 
 <!-- Open Graph / social share preview -->
 <meta property="og:type" content="article">
-<meta property="og:site_name" content="Temuri Razmadze">
-<meta property="og:title" content="{title} — Temuri Razmadze">
+<meta property="og:site_name" content="Temo Razmadze">
+<meta property="og:title" content="{title} — Temo Razmadze">
 <meta property="og:description" content="Case study · {kicker}. {tiles_line}">
-<meta property="og:url" content="https://temorazmadze07.github.io/Portfolio/{slug}.html">
-<meta property="og:image" content="https://temorazmadze07.github.io/Portfolio/assets/og-image.png">
+<meta property="og:url" content="https://temorazmadze.com/{slug}.html">
+<meta property="og:image" content="https://temorazmadze.com/assets/og-image.png?v=2">
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="{title} — Temuri Razmadze">
+<meta name="twitter:title" content="{title} — Temo Razmadze">
 <meta name="twitter:description" content="Case study · {kicker}. {tiles_line}">
-<meta name="twitter:image" content="https://temorazmadze07.github.io/Portfolio/assets/og-image.png">
+<meta name="twitter:image" content="https://temorazmadze.com/assets/og-image.png?v=2">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -148,7 +148,7 @@ HEAD = """<!DOCTYPE html>
 
 <header class="nav">
   <div class="nav-inner">
-    <a class="nav-name" href="index.html">Temuri&nbsp;Razmadze</a>
+    <a class="nav-name" href="index.html">Temo&nbsp;Razmadze</a>
     <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-links"><span class="nav-burger" aria-hidden="true"></span></button>
     <nav class="nav-links" id="nav-links" aria-label="Main">
       <a href="index.html#work">Work</a>
@@ -257,7 +257,7 @@ def page(c, nxt):
 
 <footer class="footer">
   <div class="wrap footer-inner">
-    <span>© 2026 Temuri Razmadze · Wrocław, Poland</span>
+    <span>© 2026 Temo Razmadze · Wrocław, Poland</span>
     <span class="footer-note">Designed &amp; built in an AI-augmented workflow — with Claude Code ✳</span>
   </div>
 </footer>

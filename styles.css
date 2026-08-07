@@ -1,5 +1,5 @@
 /* ============================================================
-   Temuri Razmadze — portfolio
+   Temo Razmadze — portfolio
    Design tokens first: tweak these, the site follows.
    ============================================================ */
 :root {
@@ -386,6 +386,10 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
 @keyframes work-scroll { to { transform: translateX(-50%); } }
 
 .pcard {
+  /* ONE inset for every edge in the card. The copy, the corner affordance and
+     the screen box all read against the same vertical line, so they share a
+     single number — they were 26 / 20 / 16 and the mismatch was visible. */
+  --pcard-pad: 26px;
   width: 350px; height: 500px; flex: none; margin-right: 24px;
   position: relative; display: flex; flex-direction: column; overflow: hidden;
   border-radius: var(--r-lg); text-decoration: none; color: rgba(255,255,255,.86);
@@ -425,7 +429,7 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
     linear-gradient(160deg, #23090b, #120405);
 }
 
-.pcard-top { padding: 26px 26px 0; }
+.pcard-top { padding: var(--pcard-pad) var(--pcard-pad) 0; }
 .pcard-cat { font-size: 11.5px; font-weight: 700; letter-spacing: .11em; text-transform: uppercase; color: rgba(255,255,255,.55); margin-bottom: 12px; }
 /* brand logo replaces the old text name (alt text keeps the name for AT).
    goLance/Novocure wordmarks contain near-navy fills that vanish on dark,
@@ -445,12 +449,12 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
   padding: 5px 10px; border-radius: var(--r-pill);
 }
 
-/* the screen sits in a plain rounded box inside the card (Temuri's call:
+/* the screen sits in a plain rounded box inside the card (Temo's call:
    no device frames) — same box size on every card, bottom-anchored, so the
    row stays aligned; the backgrounds carry the variety. Hover lifts it. */
 .pcard-figure { margin-top: 18px; flex: 1 1 auto; min-height: 200px; position: relative; }
 .pcard-screen {
-  position: absolute; left: 16px; right: 16px; bottom: 16px; height: 220px;
+  position: absolute; left: var(--pcard-pad); right: var(--pcard-pad); bottom: var(--pcard-pad); height: 220px;
   display: block; overflow: hidden; border-radius: 12px;
   background: #fff;
   border: 1px solid rgba(255,255,255,.18);
@@ -465,7 +469,7 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
 
 /* corner affordance — always visible, nudges + turns accent on hover */
 .pcard-go {
-  position: absolute; top: 20px; right: 20px; z-index: 2;
+  position: absolute; top: var(--pcard-pad); right: var(--pcard-pad); z-index: 2;
   width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center;
   background: rgba(255,255,255,.14); color: #fff;
   transition: transform .35s ease, background .35s ease;
@@ -474,13 +478,20 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
 .pcard-go svg { width: 15px; height: 15px; }
 
 @media (max-width: 880px) {
-  .pcard { width: 276px; height: 432px; margin-right: 16px; }
+  /* 456, not 432: Rogers' description wraps ~2 lines longer than the others at
+     276px, so .pcard-top runs 232px and the 176px screen no longer cleared the
+     card's floor — it overflowed by 20px and got clipped by .pcard's own
+     overflow:hidden. 452 is the exact minimum; 456 keeps ~20px between the
+     chips and the screen. Sized from the LONGEST card, not a sampled one. */
+  .pcard { width: 276px; height: 456px; margin-right: 16px; }
   .pcard-logo img { height: 23px; }
   .pcard.tint-green .pcard-logo img { height: 21px; }
   .pcard.tint-sand  .pcard-logo img { height: 17px; }
   .pcard.tint-rose  .pcard-logo img { height: 19px; }
   .pcard-desc { font-size: 14px; }
-  .pcard-screen { left: 13px; right: 13px; bottom: 13px; height: 176px; }
+  /* inset stays --pcard-pad here too: .pcard-top keeps its 26px at this
+     breakpoint, so the screen has to hold the same line to stay aligned. */
+  .pcard-screen { height: 176px; }
   .work-track { animation-duration: 38s; }
 }
 
@@ -523,8 +534,8 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
 .t-blogo-rogers   { height: 16px; }
 .t-blogo-golance  { height: 19px; }
 .t-blogo-epam     { height: 22px; }
-/* Google as its 4-colour wordmark, set in the site font (nominative attribution use) */
-.t-blogo-google { font-weight: 800; font-size: 19px; letter-spacing: -.02em; line-height: 1; white-space: nowrap; }
+/* Google's official 4-colour wordmark (nominative attribution use) */
+.t-blogo-google   { height: 22px; }
 /* recommenders with no named employer carry a small category label instead of a logo */
 .t-brand--label { font-size: 11px; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; color: var(--mute); }
 
@@ -574,7 +585,6 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
 .t-photo-attr i { display: block; font-size: 12.5px; color: rgba(255,255,255,.85); font-style: normal; }
 /* white knockout logos over the photo */
 .t-brand--knockout img { filter: brightness(0) invert(1); }
-.t-brand--knockout .t-blogo-google b { color: #fff !important; }
 
 /* ---------- reveal animations ---------- */
 .reveal { opacity: 0; transform: translateY(26px); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.65,.3,1); }
@@ -1218,7 +1228,7 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
 
    The whole banner is one <a>. Nothing inside may be a link (no nested
    anchors); the "Next project" pill is a styled <span> — the label and the
-   arrow merged into one pressable-looking element (Temuri's spec 2026-07-31:
+   arrow merged into one pressable-looking element (Temo's spec 2026-07-31:
    title + company as the text, label+arrow combined "somewhere on the card";
    the old bare arrow circle floated meaninglessly beside the copy on phones). */
 .c2next {
@@ -1617,7 +1627,7 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
 /* --- .c2quotes: recognition set in the page's own type ----------------------
    This band used to be a screenshot of EPAM's recognition UI dropped onto the
    tint: a white card, in someone else's typeface, and the only image on the
-   page that wasn't Temuri's own work. Only the medals survive as images
+   page that wasn't Temo's own work. Only the medals survive as images
    (transparent WebP, cut by medal() in novocure_assets.py) — the words are page
    text now, so they set in Plus Jakarta Sans, wrap at any width, can be
    selected and translated, and cost ~26 KB instead of 83.
@@ -1737,7 +1747,7 @@ h1, h2, h3 { color: var(--ink); font-weight: 800; letter-spacing: -0.02em; }
 /* the supporting laptops are further from the "camera": a tighter, dimmer
    shadow keeps them planted without competing with the lead's */
 .c2trio-side .c2dev-screen { box-shadow: 0 22px 40px -22px rgba(14, 27, 44, .38); }
-/* .c2trio--cards — the SHIPPED variant (Temuri's pick, 2026-08-01): only the
+/* .c2trio--cards — the SHIPPED variant (Temo's pick, 2026-08-01): only the
    LEAD gets a laptop; the sides are plain rounded screens (the band's own
    screenshot language, .case2-imgband img). One device says "the product",
    the flat cards say "and there is more of it" without three bezels

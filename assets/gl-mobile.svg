@@ -1,7 +1,7 @@
 <!-- EDITED AFTER EXPORT, 2026-07-31 — re-exporting from Figma WILL UNDO THIS.
      The "Client Dashboard" page title came out of the mobile frame at ~34.5px on
      a 360px canvas: 79% of the screen width, and larger than the same title on
-     the 1440px desktop export. Temuri flagged it. The text is outlined (this
+     the 1440px desktop export. Temo flagged it. The text is outlined (this
      file has zero <text> nodes), so it cannot be restyled — the single path that
      draws it is wrapped in a <g transform="translate(17.056 135.26) scale(0.7)
      translate(-17.056 -135.26)">, which shrinks the glyphs about their own left

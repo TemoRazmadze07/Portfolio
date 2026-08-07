@@ -85,7 +85,7 @@ draw.rectangle([PAD, dy, W - PAD, dy + 1], fill=(70, 84, 130))
 by = 508
 draw.rounded_rectangle([PAD, by + 4, PAD + 5, by + 52], radius=2, fill=(143, 179, 255))
 nx = PAD + 22
-draw.text((nx, by), "Temuri Razmadze", font=f(BOLD, 33), fill=(255, 255, 255))
+draw.text((nx, by), "Temo Razmadze", font=f(BOLD, 33), fill=(255, 255, 255))
 draw.text((nx, by + 46), "10+ yrs · 30+ products shipped · Global Finance “Best Online Portal” 2021",
           font=f(MEDIUM, 20), fill=(174, 185, 216))
 
