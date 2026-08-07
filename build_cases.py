@@ -116,22 +116,23 @@ HEAD = """<!DOCTYPE html>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{title} — Temo Razmadze</title>
 <meta name="description" content="Case study: {kicker}. {tiles_line}">
-<link rel="canonical" href="https://temorazmadze.com/{slug}.html">
+<link rel="canonical" href="https://www.temorazmadze.com/{slug}.html">
 
 <!-- Open Graph / social share preview -->
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Temo Razmadze">
 <meta property="og:title" content="{title} — Temo Razmadze">
 <meta property="og:description" content="Case study · {kicker}. {tiles_line}">
-<meta property="og:url" content="https://temorazmadze.com/{slug}.html">
-<meta property="og:image" content="https://temorazmadze.com/assets/og-image.png?v=2">
+<meta property="og:url" content="https://www.temorazmadze.com/{slug}.html">
+<meta property="og:image" content="https://www.temorazmadze.com/assets/og-{slug}.png?v=1">
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="{og_alt}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{title} — Temo Razmadze">
 <meta name="twitter:description" content="Case study · {kicker}. {tiles_line}">
-<meta name="twitter:image" content="https://temorazmadze.com/assets/og-image.png?v=2">
+<meta name="twitter:image" content="https://www.temorazmadze.com/assets/og-{slug}.png?v=1">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -180,7 +181,10 @@ def page(c, nxt):
     meta = "".join(f'<div><b>{k}</b><span>{v}</span></div>' for k,v in c["meta"])
     also = "".join(f"<li>{x}</li>" for x in c["also"])
     tiles_line = " · ".join(f"{n} {l}" for n,l in c["tiles"])
-    return HEAD.format(title=c["title"], kicker=c["kicker"], tiles_line=tiles_line, v=V, slug=c["slug"]) + f"""
+    # describes the og card build_og.py draws for this case: title + its metrics
+    og_alt = f'{c["kicker"]} case study card — {c["title"]}. {tiles_line}.'
+    return HEAD.format(title=c["title"], kicker=c["kicker"], tiles_line=tiles_line,
+                       og_alt=og_alt, v=V, slug=c["slug"]) + f"""
 <main>
   <section class="case-hero">
     <div class="wrap">
